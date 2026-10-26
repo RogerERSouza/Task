@@ -1,0 +1,47 @@
+export type ContentKind = 'note' | 'checklist' | 'tutorial' | 'counter'
+
+export interface Section {
+  id: string
+  parentId: string | null
+  title: string
+  emoji: string
+  color: string
+}
+
+export interface ListItem {
+  id: string
+  text: string
+  completed: boolean
+}
+
+export interface CounterEntry {
+  id: string
+  delta: number
+  createdAt: string
+  note: string
+}
+
+export interface ContentBase {
+  id: string
+  sectionId: string
+  title: string
+}
+
+export type Content =
+  | (ContentBase & { kind: 'note'; text: string })
+  | (ContentBase & { kind: 'checklist'; items: ListItem[] })
+  | (ContentBase & { kind: 'tutorial'; text: string; items: ListItem[] })
+  | (ContentBase & { kind: 'counter'; entries: CounterEntry[] })
+
+export interface Reminder {
+  id: string
+  title: string
+  date: string
+}
+
+export interface Notebook {
+  schemaVersion: 1
+  sections: Section[]
+  contents: Content[]
+  reminders: Reminder[]
+}

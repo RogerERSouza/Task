@@ -1,0 +1,124 @@
+import type { Content, CounterEntry, Notebook, Section } from '../types'
+
+export const STORAGE_KEY = 'task.notebook.v1'
+export const CONTENT_LABELS = {
+  note: 'Nota',
+  checklist: 'Checklist',
+  tutorial: 'Tutorial',
+  counter: 'Contador',
+}
+export const SECTION_COLORS = [
+  '#a7bcec',
+  '#c5a5dc',
+  '#b4cbb3',
+  '#edcf94',
+  '#dfaba5',
+]
+
+export function getCounterTotal(entries: CounterEntry[]): number {
+  return entries.reduce((total, entry) => total + entry.delta, 0)
+}
+
+export function getSectionPath(
+  sections: Section[],
+  id: string | null,
+): Section[] {
+  const path: Section[] = []
+  const visited = new Set<string>()
+  let current = sections.find((section) => section.id === id)
+  while (current && !visited.has(current.id)) {
+    visited.add(current.id)
+    path.unshift(current)
+    current = sections.find((section) => section.id === current?.parentId)
+  }
+  return path
+}
+
+export function createContent(
+  kind: Content['kind'],
+  sectionId: string,
+  title: string,
+): Content {
+  const base = { id: crypto.randomUUID(), sectionId, title }
+  switch (kind) {
+    case 'note':
+      return { ...base, kind, text: '' }
+    case 'checklist':
+      return { ...base, kind, items: [] }
+    case 'tutorial':
+      return { ...base, kind, text: '', items: [] }
+    case 'counter':
+      return { ...base, kind, entries: [] }
+  }
+}
+
+export function isNotebook(value: unknown): value is Notebook {
+  if (!value || typeof value !== 'object') return false
+  const data = value as Record<string, unknown>
+  const isRecord = (item: unknown): item is Record<string, unknown> =>
+    Boolean(item && typeof item === 'object')
+  const isText = (item: unknown) => typeof item === 'string'
+  const validItems = (items: unknown) =>
+    Array.isArray(items) &&
+    items.every(
+      (item) =>
+        isRecord(item) &&
+        isText(item.id) &&
+        isText(item.text) &&
+        typeof item.completed === 'boolean',
+    )
+  return (
+    data.schemaVersion === 1 &&
+    Array.isArray(data.sections) &&
+    data.sections.every(
+      (section) =>
+        isRecord(section) &&
+        isText(section.id) &&
+        (section.parentId === null || isText(section.parentId)) &&
+        isText(section.title) &&
+        isText(section.emoji) &&
+        isText(section.color),
+    ) &&
+    Array.isArray(data.reminders) &&
+    data.reminders.every(
+      (reminder) =>
+        isRecord(reminder) &&
+        isText(reminder.id) &&
+        isText(reminder.title) &&
+        isText(reminder.date),
+    ) &&
+    Array.isArray(data.contents) &&
+    data.contents.every((content) => {
+      if (
+        !isRecord(content) ||
+        !isText(content.id) ||
+        !isText(content.sectionId) ||
+        !isText(content.title)
+      )
+        return false
+      switch (content.kind) {
+        case 'note':
+          return isText(content.text)
+        case 'checklist':
+          return validItems(content.items)
+        case 'tutorial':
+          return isText(content.text) && validItems(content.items)
+        case 'counter':
+          return (
+            Array.isArray(content.entries) &&
+            content.entries.every(
+              (entry) =>
+                isRecord(entry) &&
+                isText(entry.id) &&
+                typeof entry.delta === 'number' &&
+                Number.isFinite(entry.delta) &&
+                isText(entry.createdAt) &&
+                isText(entry.note),
+            )
+          )
+        default:
+          return false
+      }
+    })
+  )
+}
