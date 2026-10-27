@@ -26,9 +26,9 @@ export function createInitialNotebook(): Notebook {
         color: '#b4cbb3',
       },
       {
-        id: 'task',
+        id: 'tomohu',
         parentId: null,
-        title: 'Projeto Task',
+        title: 'Projeto Tomohu',
         emoji: '💡',
         color: '#edcf94',
       },
@@ -89,9 +89,9 @@ export function createInitialNotebook(): Notebook {
       },
       {
         id: 'ideas',
-        sectionId: 'task',
+        sectionId: 'tomohu',
         kind: 'note',
-        title: 'Ideias para o Task',
+        title: 'Ideias para o Tomohu',
         text: 'Um lugar para organizar o que quero aprender, fazer e lembrar.\n\nExperimente criar uma seção e adicionar seu próprio conteúdo.',
       },
     ],

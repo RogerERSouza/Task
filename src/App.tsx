@@ -31,7 +31,15 @@ function getHash() {
   return window.location.hash
 }
 function navigate(kind?: 'section' | 'content', id?: string) {
-  window.location.hash = kind && id ? `${kind}/${id}` : ''
+  const updateRoute = () => {
+    window.location.hash = kind && id ? `${kind}/${id}` : ''
+  }
+  const documentWithTransitions = document as Document & {
+    startViewTransition?: (callback: () => void) => void
+  }
+  if (documentWithTransitions.startViewTransition)
+    documentWithTransitions.startViewTransition(updateRoute)
+  else updateRoute()
 }
 
 function SectionForm({
@@ -75,7 +83,11 @@ function SectionForm({
       </label>
       <fieldset className="color-field">
         <legend>Cor de destaque</legend>
-        <div className="color-options">
+        <div
+          className="color-options"
+          role="radiogroup"
+          aria-label="Cores sugeridas"
+        >
           {SECTION_COLORS.map((option, index) => (
             <label
               key={option}
@@ -95,7 +107,19 @@ function SectionForm({
               <span aria-hidden="true">{color === option ? '✓' : ''}</span>
             </label>
           ))}
+          <label className="color-picker" title="Escolher outra cor">
+            <input
+              type="color"
+              value={color}
+              onChange={(event) => setColor(event.target.value)}
+              aria-label="Escolher outra cor"
+            />
+            <span aria-hidden="true">+</span>
+          </label>
         </div>
+        <span className="color-value" aria-live="polite">
+          Cor atual: {color.toUpperCase()}
+        </span>
       </fieldset>
       <button className="primary-button" type="submit" disabled={!title.trim()}>
         {section ? 'Salvar alterações' : 'Criar seção'}
@@ -298,7 +322,7 @@ function App() {
     )
     const link = document.createElement('a')
     link.href = url
-    link.download = `task-backup-${new Date().toISOString().slice(0, 10)}.json`
+    link.download = `tomohu-backup-${new Date().toISOString().slice(0, 10)}.json`
     link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
@@ -454,14 +478,39 @@ function App() {
                     onChange={(event) => setQuery(event.target.value)}
                   />
                 </label>
-                <select
-                  aria-label="Ordenar seções"
-                  value={sortOrder}
-                  onChange={(event) => setSortOrder(event.target.value)}
-                >
-                  <option value="manual">Ordem de criação</option>
-                  <option value="alphabetical">Nome: A–Z</option>
-                </select>
+                <div className="sort-control">
+                  <span className="sort-label">Ordenar</span>
+                  <div
+                    className="sort-options"
+                    role="group"
+                    aria-label="Ordenar seções"
+                  >
+                    <button
+                      type="button"
+                      className={
+                        sortOrder === 'manual'
+                          ? 'sort-option active'
+                          : 'sort-option'
+                      }
+                      onClick={() => setSortOrder('manual')}
+                      aria-pressed={sortOrder === 'manual'}
+                    >
+                      Recentes
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        sortOrder === 'alphabetical'
+                          ? 'sort-option active'
+                          : 'sort-option'
+                      }
+                      onClick={() => setSortOrder('alphabetical')}
+                      aria-pressed={sortOrder === 'alphabetical'}
+                    >
+                      A–Z
+                    </button>
+                  </div>
+                </div>
                 <button
                   className="primary-button"
                   onClick={() => setEditor({ kind: 'section' })}
@@ -579,7 +628,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Task · v0.1.1</span>
+              <span className="muted">Tomohu · v0.2.0</span>
             </div>
           )}
           {editor.kind === 'section' && (

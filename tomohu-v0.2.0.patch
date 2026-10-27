@@ -1,0 +1,475 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index a160b67..17da29f 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,14 @@
+ # Histórico de versões
+ 
++## 0.2.0 — 2026-10-27
++
++### Alterado
++
++- Checkboxes de listas agora usam o visual da paleta do Tomohu, com estado concluído mais claro.
++- Ordenação ganhou controles próprios para Recentes e A–Z, sem o seletor padrão do navegador.
++- Seções e subseções aceitam qualquer cor pelo seletor cromático, além das cores sugeridas.
++- Botões e navegação entre seções receberam transições leves em navegadores compatíveis.
++
+ ## 0.1.1 — 2026-10-26
+ 
+ ### Alterado
+diff --git a/README.md b/README.md
+index f8e96c8..49c56f2 100644
+--- a/README.md
++++ b/README.md
+@@ -1,4 +1,4 @@
+-# Task · v0.1.1
++# Tomohu · v0.2.0
+ 
+ Organizador pessoal em React e TypeScript. Primeira versão funcional, com armazenamento local e visual baseado no protótipo azul-escuro do Figma.
+ 
+@@ -65,6 +65,6 @@ Nomes de código em inglês; textos de interface em português. Componentes usam
+ 
+ ## Versões e Git
+ 
+-`0.1.1` identifica esta entrega no pacote e no changelog. Nenhum repositório, commit ou tag foi criado, conforme combinado. Quando validarmos a base no computador de Roger, podemos criar o primeiro commit e a tag correspondente à primeira versão aprovada.
++`0.2.0` identifica esta entrega no pacote e no changelog. O repositório é publicado pelo GitHub Pages após cada push na `main`.
+ 
+ Commits futuros: `feat: add ...`, `fix: correct ...`, `refactor: extract ...`. Uma versão pode reunir vários commits.
+diff --git a/index.html b/index.html
+index d7ca7ec..a5c0fad 100644
+--- a/index.html
++++ b/index.html
+@@ -7,9 +7,9 @@
+     <meta name="theme-color" content="#151f39" />
+     <meta
+       name="description"
+-      content="Task: seu espaço para aprender, organizar ideias e acompanhar registros pessoais."
++      content="Tomohu: seu espaço para aprender, organizar ideias e acompanhar registros pessoais."
+     />
+-    <title>Task — Seu caderno pessoal</title>
++    <title>Tomohu — Seu caderno pessoal</title>
+   </head>
+   <body>
+     <div id="root"></div>
+diff --git a/package-lock.json b/package-lock.json
+index d08d502..4e9ed62 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,12 @@
+ {
+-  "name": "task",
+-  "version": "0.1.1",
++  "name": "tomohu",
++  "version": "0.2.0",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+-      "name": "task",
+-      "version": "0.1.1",
++      "name": "tomohu",
++      "version": "0.2.0",
+       "dependencies": {
+         "react": "^19.3.1",
+         "react-dom": "^19.3.1"
+diff --git a/package.json b/package.json
+index 97baf59..dd3d8a0 100644
+--- a/package.json
++++ b/package.json
+@@ -1,7 +1,7 @@
+ {
+-  "name": "task",
++  "name": "tomohu",
+   "private": true,
+-  "version": "0.1.1",
++  "version": "0.2.0",
+   "type": "module",
+   "scripts": {
+     "dev": "vite",
+diff --git a/src/App.css b/src/App.css
+index de408e9..d1b116f 100644
+--- a/src/App.css
++++ b/src/App.css
+@@ -209,13 +209,40 @@ input::placeholder,
+ textarea::placeholder {
+   color: #8e9cb7;
+ }
+-select {
+-  color: #b2bfd5;
++.sort-control {
++  display: inline-flex;
++  align-items: center;
++  gap: 8px;
++  padding: 4px;
+   background: #222f4c;
+-  border: 1px solid #ffffff08;
+-  padding: 8px 10px;
+-  font-size: 11px;
+-  max-width: 100%;
++  border: 1px solid #ffffff0d;
++  border-radius: 10px;
++}
++.sort-label {
++  padding-left: 7px;
++  color: #9eafca;
++  font-size: 10px;
++}
++.sort-options {
++  display: flex;
++  gap: 2px;
++}
++.sort-option {
++  min-height: 31px;
++  border: 1px solid transparent;
++  background: transparent;
++  padding: 5px 9px;
++  color: #aebbd1;
++  font-size: 10px;
++  font-weight: 600;
++}
++.sort-option:hover {
++  background: #ffffff0b;
++}
++.sort-option.active {
++  background: #edcf9420;
++  border-color: #edcf9440;
++  color: #f3daa1;
+ }
+ .primary-button,
+ .secondary-button {
+@@ -234,6 +261,7 @@ select {
+ }
+ .primary-button:hover:not(:disabled) {
+   background: #f8e5b7;
++  transform: translateY(-1px);
+ }
+ .secondary-button {
+   background: #263450;
+@@ -558,6 +586,7 @@ legend {
+ }
+ .color-options {
+   display: flex;
++  flex-wrap: wrap;
+   gap: 12px;
+ }
+ .color-option {
+@@ -580,6 +609,65 @@ legend {
+ .color-option span {
+   pointer-events: none;
+ }
++.color-option input:focus-visible {
++  outline: 2px solid #f1d69a;
++  outline-offset: 3px;
++}
++.color-option:has(input:checked) {
++  box-shadow:
++    0 0 0 3px #18243d,
++    0 0 0 5px currentColor;
++}
++.color-picker {
++  position: relative;
++  display: grid;
++  width: 34px;
++  height: 34px;
++  overflow: hidden;
++  place-items: center;
++  border: 1px solid #ffffff25;
++  border-radius: 50%;
++  background: conic-gradient(
++    #ee7786,
++    #edcf94,
++    #98cfa8,
++    #87c8e9,
++    #ae9be4,
++    #ee7786
++  );
++  color: #19243c;
++  cursor: pointer;
++  font-size: 19px;
++  font-weight: 500;
++}
++.color-picker input {
++  position: absolute;
++  inset: -8px;
++  width: calc(100% + 16px);
++  height: calc(100% + 16px);
++  cursor: pointer;
++  opacity: 0;
++}
++.color-picker span {
++  pointer-events: none;
++  width: 19px;
++  height: 19px;
++  display: grid;
++  place-items: center;
++  border-radius: 50%;
++  background: #eef1f8;
++}
++.color-picker:has(input:focus-visible) {
++  outline: 2px solid #f1d69a;
++  outline-offset: 3px;
++}
++.color-value {
++  display: block;
++  margin-top: 12px;
++  color: #9cabc4;
++  font-size: 10px;
++  font-variant-numeric: tabular-nums;
++}
+ .type-options {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+@@ -624,10 +712,48 @@ legend {
+   flex-wrap: wrap;
+ }
+ .editable-item > input[type='checkbox'] {
++  appearance: none;
++  display: grid;
++  place-content: center;
+   width: 18px;
+   height: 18px;
+-  accent-color: #edcf94;
++  margin: 0 2px 0 0;
++  border: 1px solid #91a7cb80;
++  border-radius: 6px;
++  background: #18243d;
+   cursor: pointer;
++  transition:
++    background 0.16s,
++    border-color 0.16s,
++    transform 0.16s;
++}
++.editable-item > input[type='checkbox']::after {
++  width: 8px;
++  height: 4px;
++  border-bottom: 2px solid #1c2943;
++  border-left: 2px solid #1c2943;
++  content: '';
++  opacity: 0;
++  transform: rotate(-45deg) translate(1px, -1px) scale(0.65);
++  transition:
++    opacity 0.12s,
++    transform 0.16s;
++}
++.editable-item > input[type='checkbox']:checked {
++  border-color: #edcf94;
++  background: #edcf94;
++}
++.editable-item > input[type='checkbox']:checked::after {
++  opacity: 1;
++  transform: rotate(-45deg) translate(1px, -1px) scale(1);
++}
++.editable-item > input[type='checkbox']:hover {
++  border-color: #edcf94;
++  transform: scale(1.08);
++}
++.editable-item > input[type='checkbox']:focus-visible {
++  outline: 2px solid #f1d69a;
++  outline-offset: 3px;
+ }
+ .item-text {
+   min-width: 80px;
+@@ -727,7 +853,7 @@ legend {
+   .section-grid {
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+   }
+-  .toolbar select {
++  .sort-control {
+     flex: 0 1 auto;
+   }
+ }
+@@ -759,8 +885,8 @@ legend {
+   .search-field {
+     flex-basis: calc(100% - 170px);
+   }
+-  .toolbar select {
+-    width: 145px;
++  .sort-control {
++    width: auto;
+   }
+   .toolbar .primary-button,
+   .toolbar .secondary-button {
+@@ -803,7 +929,9 @@ legend {
+   }
+ }
+ @media (prefers-reduced-motion: reduce) {
+-  .section-card {
++  .section-card,
++  .primary-button,
++  .editable-item > input[type='checkbox'] {
+     transition: none;
+   }
+   .section-card:hover {
+diff --git a/src/App.tsx b/src/App.tsx
+index 9b811c8..9464f4c 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -31,7 +31,15 @@ function getHash() {
+   return window.location.hash
+ }
+ function navigate(kind?: 'section' | 'content', id?: string) {
+-  window.location.hash = kind && id ? `${kind}/${id}` : ''
++  const updateRoute = () => {
++    window.location.hash = kind && id ? `${kind}/${id}` : ''
++  }
++  const documentWithTransitions = document as Document & {
++    startViewTransition?: (callback: () => void) => void
++  }
++  if (documentWithTransitions.startViewTransition)
++    documentWithTransitions.startViewTransition(updateRoute)
++  else updateRoute()
+ }
+ 
+ function SectionForm({
+@@ -75,7 +83,11 @@ function SectionForm({
+       </label>
+       <fieldset className="color-field">
+         <legend>Cor de destaque</legend>
+-        <div className="color-options">
++        <div
++          className="color-options"
++          role="radiogroup"
++          aria-label="Cores sugeridas"
++        >
+           {SECTION_COLORS.map((option, index) => (
+             <label
+               key={option}
+@@ -95,7 +107,19 @@ function SectionForm({
+               <span aria-hidden="true">{color === option ? '✓' : ''}</span>
+             </label>
+           ))}
++          <label className="color-picker" title="Escolher outra cor">
++            <input
++              type="color"
++              value={color}
++              onChange={(event) => setColor(event.target.value)}
++              aria-label="Escolher outra cor"
++            />
++            <span aria-hidden="true">+</span>
++          </label>
+         </div>
++        <span className="color-value" aria-live="polite">
++          Cor atual: {color.toUpperCase()}
++        </span>
+       </fieldset>
+       <button className="primary-button" type="submit" disabled={!title.trim()}>
+         {section ? 'Salvar alterações' : 'Criar seção'}
+@@ -298,7 +322,7 @@ function App() {
+     )
+     const link = document.createElement('a')
+     link.href = url
+-    link.download = `task-backup-${new Date().toISOString().slice(0, 10)}.json`
++    link.download = `tomohu-backup-${new Date().toISOString().slice(0, 10)}.json`
+     link.click()
+     setTimeout(() => URL.revokeObjectURL(url), 1000)
+   }
+@@ -454,14 +478,39 @@ function App() {
+                     onChange={(event) => setQuery(event.target.value)}
+                   />
+                 </label>
+-                <select
+-                  aria-label="Ordenar seções"
+-                  value={sortOrder}
+-                  onChange={(event) => setSortOrder(event.target.value)}
+-                >
+-                  <option value="manual">Ordem de criação</option>
+-                  <option value="alphabetical">Nome: A–Z</option>
+-                </select>
++                <div className="sort-control">
++                  <span className="sort-label">Ordenar</span>
++                  <div
++                    className="sort-options"
++                    role="group"
++                    aria-label="Ordenar seções"
++                  >
++                    <button
++                      type="button"
++                      className={
++                        sortOrder === 'manual'
++                          ? 'sort-option active'
++                          : 'sort-option'
++                      }
++                      onClick={() => setSortOrder('manual')}
++                      aria-pressed={sortOrder === 'manual'}
++                    >
++                      Recentes
++                    </button>
++                    <button
++                      type="button"
++                      className={
++                        sortOrder === 'alphabetical'
++                          ? 'sort-option active'
++                          : 'sort-option'
++                      }
++                      onClick={() => setSortOrder('alphabetical')}
++                      aria-pressed={sortOrder === 'alphabetical'}
++                    >
++                      A–Z
++                    </button>
++                  </div>
++                </div>
+                 <button
+                   className="primary-button"
+                   onClick={() => setEditor({ kind: 'section' })}
+@@ -579,7 +628,7 @@ function App() {
+                 Exportar cópia dos dados
+               </button>
+               <p className="muted">Os dados ficam neste navegador.</p>
+-              <span className="muted">Task · v0.1.1</span>
++              <span className="muted">Tomohu · v0.2.0</span>
+             </div>
+           )}
+           {editor.kind === 'section' && (
+diff --git a/src/data/initialNotebook.ts b/src/data/initialNotebook.ts
+index 769f5bf..bb6f733 100644
+--- a/src/data/initialNotebook.ts
++++ b/src/data/initialNotebook.ts
+@@ -26,9 +26,9 @@ export function createInitialNotebook(): Notebook {
+         color: '#b4cbb3',
+       },
+       {
+-        id: 'task',
++        id: 'tomohu',
+         parentId: null,
+-        title: 'Projeto Task',
++        title: 'Projeto Tomohu',
+         emoji: '💡',
+         color: '#edcf94',
+       },
+@@ -89,9 +89,9 @@ export function createInitialNotebook(): Notebook {
+       },
+       {
+         id: 'ideas',
+-        sectionId: 'task',
++        sectionId: 'tomohu',
+         kind: 'note',
+-        title: 'Ideias para o Task',
++        title: 'Ideias para o Tomohu',
+         text: 'Um lugar para organizar o que quero aprender, fazer e lembrar.\n\nExperimente criar uma seção e adicionar seu próprio conteúdo.',
+       },
+     ],
+diff --git a/src/index.css b/src/index.css
+index 668d6d4..a106598 100644
+--- a/src/index.css
++++ b/src/index.css
+@@ -32,6 +32,11 @@ textarea {
+ }
+ button {
+   cursor: pointer;
++  transition:
++    background 0.16s,
++    border-color 0.16s,
++    color 0.16s,
++    transform 0.16s;
+ }
+ button:disabled {
+   opacity: 0.4;
+@@ -69,3 +74,8 @@ button svg {
+ ::selection {
+   background: #edcf9460;
+ }
++::view-transition-old(root),
++::view-transition-new(root) {
++  animation-duration: 160ms;
++  animation-timing-function: ease-out;
++}

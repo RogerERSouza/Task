@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.2.0 — 2026-10-27
+
+### Alterado
+
+- Checkboxes de listas agora usam o visual da paleta do Tomohu, com estado concluído mais claro.
+- Ordenação ganhou controles próprios para Recentes e A–Z, sem o seletor padrão do navegador.
+- Seções e subseções aceitam qualquer cor pelo seletor cromático, além das cores sugeridas.
+- Botões e navegação entre seções receberam transições leves em navegadores compatíveis.
+
 ## 0.1.1 — 2026-10-26
 
 ### Alterado

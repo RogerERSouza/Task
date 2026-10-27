@@ -1,4 +1,4 @@
-# Task · v0.1.1
+# Tomohu · v0.2.0
 
 Organizador pessoal em React e TypeScript. Primeira versão funcional, com armazenamento local e visual baseado no protótipo azul-escuro do Figma.
 
@@ -65,6 +65,6 @@ Nomes de código em inglês; textos de interface em português. Componentes usam
 
 ## Versões e Git
 
-`0.1.1` identifica esta entrega no pacote e no changelog. Nenhum repositório, commit ou tag foi criado, conforme combinado. Quando validarmos a base no computador de Roger, podemos criar o primeiro commit e a tag correspondente à primeira versão aprovada.
+`0.2.0` identifica esta entrega no pacote e no changelog. O repositório é publicado pelo GitHub Pages após cada push na `main`.
 
 Commits futuros: `feat: add ...`, `fix: correct ...`, `refactor: extract ...`. Uma versão pode reunir vários commits.

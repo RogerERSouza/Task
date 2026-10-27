@@ -209,13 +209,40 @@ input::placeholder,
 textarea::placeholder {
   color: #8e9cb7;
 }
-select {
-  color: #b2bfd5;
+.sort-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
   background: #222f4c;
-  border: 1px solid #ffffff08;
-  padding: 8px 10px;
-  font-size: 11px;
-  max-width: 100%;
+  border: 1px solid #ffffff0d;
+  border-radius: 10px;
+}
+.sort-label {
+  padding-left: 7px;
+  color: #9eafca;
+  font-size: 10px;
+}
+.sort-options {
+  display: flex;
+  gap: 2px;
+}
+.sort-option {
+  min-height: 31px;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 5px 9px;
+  color: #aebbd1;
+  font-size: 10px;
+  font-weight: 600;
+}
+.sort-option:hover {
+  background: #ffffff0b;
+}
+.sort-option.active {
+  background: #edcf9420;
+  border-color: #edcf9440;
+  color: #f3daa1;
 }
 .primary-button,
 .secondary-button {
@@ -234,6 +261,7 @@ select {
 }
 .primary-button:hover:not(:disabled) {
   background: #f8e5b7;
+  transform: translateY(-1px);
 }
 .secondary-button {
   background: #263450;
@@ -558,6 +586,7 @@ legend {
 }
 .color-options {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 .color-option {
@@ -579,6 +608,65 @@ legend {
 }
 .color-option span {
   pointer-events: none;
+}
+.color-option input:focus-visible {
+  outline: 2px solid #f1d69a;
+  outline-offset: 3px;
+}
+.color-option:has(input:checked) {
+  box-shadow:
+    0 0 0 3px #18243d,
+    0 0 0 5px currentColor;
+}
+.color-picker {
+  position: relative;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid #ffffff25;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ee7786,
+    #edcf94,
+    #98cfa8,
+    #87c8e9,
+    #ae9be4,
+    #ee7786
+  );
+  color: #19243c;
+  cursor: pointer;
+  font-size: 19px;
+  font-weight: 500;
+}
+.color-picker input {
+  position: absolute;
+  inset: -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  cursor: pointer;
+  opacity: 0;
+}
+.color-picker span {
+  pointer-events: none;
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef1f8;
+}
+.color-picker:has(input:focus-visible) {
+  outline: 2px solid #f1d69a;
+  outline-offset: 3px;
+}
+.color-value {
+  display: block;
+  margin-top: 12px;
+  color: #9cabc4;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
 }
 .type-options {
   display: grid;
@@ -624,10 +712,48 @@ legend {
   flex-wrap: wrap;
 }
 .editable-item > input[type='checkbox'] {
+  appearance: none;
+  display: grid;
+  place-content: center;
   width: 18px;
   height: 18px;
-  accent-color: #edcf94;
+  margin: 0 2px 0 0;
+  border: 1px solid #91a7cb80;
+  border-radius: 6px;
+  background: #18243d;
   cursor: pointer;
+  transition:
+    background 0.16s,
+    border-color 0.16s,
+    transform 0.16s;
+}
+.editable-item > input[type='checkbox']::after {
+  width: 8px;
+  height: 4px;
+  border-bottom: 2px solid #1c2943;
+  border-left: 2px solid #1c2943;
+  content: '';
+  opacity: 0;
+  transform: rotate(-45deg) translate(1px, -1px) scale(0.65);
+  transition:
+    opacity 0.12s,
+    transform 0.16s;
+}
+.editable-item > input[type='checkbox']:checked {
+  border-color: #edcf94;
+  background: #edcf94;
+}
+.editable-item > input[type='checkbox']:checked::after {
+  opacity: 1;
+  transform: rotate(-45deg) translate(1px, -1px) scale(1);
+}
+.editable-item > input[type='checkbox']:hover {
+  border-color: #edcf94;
+  transform: scale(1.08);
+}
+.editable-item > input[type='checkbox']:focus-visible {
+  outline: 2px solid #f1d69a;
+  outline-offset: 3px;
 }
 .item-text {
   min-width: 80px;
@@ -727,7 +853,7 @@ legend {
   .section-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .toolbar select {
+  .sort-control {
     flex: 0 1 auto;
   }
 }
@@ -759,8 +885,8 @@ legend {
   .search-field {
     flex-basis: calc(100% - 170px);
   }
-  .toolbar select {
-    width: 145px;
+  .sort-control {
+    width: auto;
   }
   .toolbar .primary-button,
   .toolbar .secondary-button {
@@ -803,7 +929,9 @@ legend {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .section-card {
+  .section-card,
+  .primary-button,
+  .editable-item > input[type='checkbox'] {
     transition: none;
   }
   .section-card:hover {

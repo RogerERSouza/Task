@@ -32,6 +32,11 @@ textarea {
 }
 button {
   cursor: pointer;
+  transition:
+    background 0.16s,
+    border-color 0.16s,
+    color 0.16s,
+    transform 0.16s;
 }
 button:disabled {
   opacity: 0.4;
@@ -68,4 +73,9 @@ button svg {
 }
 ::selection {
   background: #edcf9460;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+  animation-timing-function: ease-out;
 }
