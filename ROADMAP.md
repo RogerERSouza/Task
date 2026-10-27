@@ -45,6 +45,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Checkboxes estilizadas com a paleta do app. — `0.2.0`
 - [x] Cores livres para seções e subseções. — `0.2.0`
 - [ ] Tema claro e escuro.
+- [ ] Seletor de idioma do app, começando por português e inglês, com textos centralizados para facilitar novos idiomas.
 - [ ] Mais opções de personalização visual sem perder a identidade do Tomohu.
 
 ### Dados, backup e dispositivos

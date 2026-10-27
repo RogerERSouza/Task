@@ -16,7 +16,7 @@ Estas regras devem ser seguidas antes, durante e depois de qualquer alteração 
 3. Reutilizar os tipos e funções de domínio existentes; não duplicar regras de negócio em componentes diferentes.
 4. Preservar dados já salvos em `localStorage`. Se o formato mudar, validar dados antigos e criar uma migração ou valores padrão compatíveis.
 5. Tratar entradas vazias, datas inválidas, itens ausentes e ações repetidas sem quebrar a tela.
-6. Manter textos da interface em português e código em inglês, seguindo o padrão atual de nomes e componentes.
+6. Manter código em inglês e seguir o padrão atual de nomes e componentes. Enquanto não houver seletor de idioma, os textos da interface ficam em português; quando houver, novos textos devem entrar na estrutura central de traduções, não espalhados pelos componentes.
 7. Não adicionar dependências externas se HTML, CSS, React ou uma função pequena já resolverem o problema.
 8. Para login, armazenamento remoto, senhas, criptografia ou notificações, planejar a arquitetura e segurança antes de escrever a implementação.
 
