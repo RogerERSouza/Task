@@ -52,6 +52,11 @@ Os testes verificam histórico do contador, hierarquia de seções, criação de
 
 Nomes de código em inglês; textos de interface em português. Componentes usam PascalCase, funções/variáveis camelCase e classes CSS kebab-case.
 
+## Planejamento
+
+O [ROADMAP.md](ROADMAP.md) reúne as próximas entregas, ideias futuras e as regras de saúde do código do projeto.
+As regras obrigatórias para alterações ficam em [AGENTS.md](AGENTS.md).
+
 ## Limites desta primeira versão
 
 - Os dados ficam somente neste navegador e origem (protocolo, host e porta). Limpar os dados do site pode removê-los. A exportação JSON é uma cópia dos dados; ainda não há importação pela interface.
