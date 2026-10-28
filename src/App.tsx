@@ -213,8 +213,16 @@ function ReminderForm({
     Boolean(reminder?.endDate && reminder.endDate !== initialDate),
   )
   const [endDate, setEndDate] = useState(reminder?.endDate ?? initialDate)
-  const [schedule, setSchedule] = useState<'all-day' | 'time-range'>(
-    reminder?.schedule ?? (reminder ? 'time-range' : 'all-day'),
+  const [occurrence, setOccurrence] = useState<
+    'all-day' | 'continuous' | 'daily-times'
+  >(
+    reminder?.schedule === 'all-day'
+      ? 'all-day'
+      : reminder?.repeatTimes?.length
+        ? 'daily-times'
+        : reminder
+          ? 'continuous'
+          : 'all-day',
   )
   const legacyTime = reminder?.date.slice(11, 16)
   const [startTime, setStartTime] = useState(
@@ -223,23 +231,38 @@ function ReminderForm({
   const [endTime, setEndTime] = useState(
     reminder?.endTime ?? getTimeOneHourLater(legacyTime ?? '09:00'),
   )
+  const [repeatTimes, setRepeatTimes] = useState(
+    reminder?.repeatTimes?.length ? reminder.repeatTimes : ['09:00'],
+  )
+  const [timeToAdd, setTimeToAdd] = useState('14:00')
   const invalidDateRange = spansMultipleDays && endDate < date
   const invalidTimeRange =
-    schedule === 'time-range' &&
+    occurrence === 'continuous' &&
     (!endTime || (!spansMultipleDays && endTime <= startTime))
+  const invalidRepeatTimes =
+    occurrence === 'daily-times' && repeatTimes.length === 0
   function changeStartDate(nextDate: string) {
     setDate(nextDate)
     if (!spansMultipleDays) setEndDate(nextDate)
   }
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    if (title.trim() && date && !invalidDateRange && !invalidTimeRange)
+    if (
+      title.trim() &&
+      date &&
+      !invalidDateRange &&
+      !invalidTimeRange &&
+      !invalidRepeatTimes
+    )
       onSave({
         title: title.trim(),
         date,
-        schedule,
+        schedule: occurrence === 'all-day' ? 'all-day' : 'time-range',
         ...(spansMultipleDays ? { endDate } : {}),
-        ...(schedule === 'time-range' ? { startTime, endTime } : {}),
+        ...(occurrence === 'continuous' ? { startTime, endTime } : {}),
+        ...(occurrence === 'daily-times'
+          ? { repeatTimes: [...repeatTimes].sort() }
+          : {}),
         countdownFormat: 'automatic',
       })
   }
@@ -255,13 +278,8 @@ function ReminderForm({
           placeholder="O que você quer lembrar?"
         />
       </label>
-      <CalendarPicker
-        label="Data de início"
-        value={date}
-        onChange={changeStartDate}
-      />
       <fieldset className="reminder-schedule-field">
-        <legend>Duração</legend>
+        <legend>O evento acontecerá em?</legend>
         <div className="reminder-schedule-options" role="group">
           <button
             type="button"
@@ -276,7 +294,7 @@ function ReminderForm({
               setEndDate(date)
             }}
           >
-            Um dia
+            Um dia específico
           </button>
           <button
             type="button"
@@ -292,6 +310,11 @@ function ReminderForm({
           </button>
         </div>
       </fieldset>
+      <CalendarPicker
+        label={spansMultipleDays ? 'Data de início' : 'Qual dia?'}
+        value={date}
+        onChange={changeStartDate}
+      />
       {spansMultipleDays && (
         <CalendarPicker
           label="Data de término"
@@ -300,38 +323,63 @@ function ReminderForm({
         />
       )}
       <fieldset className="reminder-schedule-field">
-        <legend>Quando acontece?</legend>
-        <div className="reminder-schedule-options" role="group">
+        <legend>
+          {spansMultipleDays
+            ? 'Como acontece nesse período?'
+            : 'O evento ocorre em?'}
+        </legend>
+        <div
+          className={
+            spansMultipleDays
+              ? 'reminder-schedule-options three-options'
+              : 'reminder-schedule-options'
+          }
+          role="group"
+        >
           <button
             type="button"
             className={
-              schedule === 'all-day'
+              occurrence === 'all-day'
                 ? 'reminder-schedule-option selected'
                 : 'reminder-schedule-option'
             }
-            aria-pressed={schedule === 'all-day'}
-            onClick={() => setSchedule('all-day')}
+            aria-pressed={occurrence === 'all-day'}
+            onClick={() => setOccurrence('all-day')}
           >
             Dia todo
           </button>
           <button
             type="button"
             className={
-              schedule === 'time-range'
+              occurrence === 'continuous'
                 ? 'reminder-schedule-option selected'
                 : 'reminder-schedule-option'
             }
-            aria-pressed={schedule === 'time-range'}
-            onClick={() => setSchedule('time-range')}
+            aria-pressed={occurrence === 'continuous'}
+            onClick={() => setOccurrence('continuous')}
           >
-            Com horário
+            {spansMultipleDays ? 'Contínuo' : 'Com horário'}
           </button>
+          {spansMultipleDays && (
+            <button
+              type="button"
+              className={
+                occurrence === 'daily-times'
+                  ? 'reminder-schedule-option selected'
+                  : 'reminder-schedule-option'
+              }
+              aria-pressed={occurrence === 'daily-times'}
+              onClick={() => setOccurrence('daily-times')}
+            >
+              Horários programados
+            </button>
+          )}
         </div>
       </fieldset>
-      {schedule === 'time-range' && (
+      {occurrence === 'continuous' && (
         <div className="reminder-time-range">
           <label className="field">
-            <span>Começa</span>
+            <span>Horário de início</span>
             <input
               type="time"
               required
@@ -340,7 +388,7 @@ function ReminderForm({
             />
           </label>
           <label className="field">
-            <span>Termina</span>
+            <span>Horário de término</span>
             <input
               type="time"
               required
@@ -349,6 +397,60 @@ function ReminderForm({
             />
           </label>
         </div>
+      )}
+      {occurrence === 'daily-times' && (
+        <fieldset className="repeat-times-field">
+          <legend>Horários programados</legend>
+          <p className="muted">
+            Adicione cada horário em que o evento deve ser lembrado.
+          </p>
+          <div className="repeat-times-list">
+            {repeatTimes.map((time, index) => (
+              <div className="repeat-time" key={`${time}-${index}`}>
+                <input
+                  type="time"
+                  value={time}
+                  aria-label={`Horário ${index + 1}`}
+                  onChange={(event) =>
+                    setRepeatTimes((times) =>
+                      times.map((current, currentIndex) =>
+                        currentIndex === index ? event.target.value : current,
+                      ),
+                    )
+                  }
+                />
+                <button
+                  type="button"
+                  aria-label={`Remover horário ${time}`}
+                  onClick={() =>
+                    setRepeatTimes((times) =>
+                      times.filter((_, currentIndex) => currentIndex !== index),
+                    )
+                  }
+                >
+                  Remover
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="add-repeat-time">
+            <input
+              type="time"
+              value={timeToAdd}
+              aria-label="Novo horário"
+              onChange={(event) => setTimeToAdd(event.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (!repeatTimes.includes(timeToAdd))
+                  setRepeatTimes((times) => [...times, timeToAdd])
+              }}
+            >
+              + Adicionar horário
+            </button>
+          </div>
+        </fieldset>
       )}
       {invalidDateRange && (
         <p className="range-warning" role="alert">
@@ -360,6 +462,11 @@ function ReminderForm({
           O horário de término precisa ser posterior ao início no mesmo dia.
         </p>
       )}
+      {invalidRepeatTimes && (
+        <p className="range-warning" role="alert">
+          Adicione pelo menos um horário para continuar.
+        </p>
+      )}
       <p className="muted">
         O contador escolhe automaticamente a melhor unidade de tempo.
       </p>
@@ -367,7 +474,11 @@ function ReminderForm({
         className="primary-button"
         type="submit"
         disabled={
-          !title.trim() || !date || invalidDateRange || invalidTimeRange
+          !title.trim() ||
+          !date ||
+          invalidDateRange ||
+          invalidTimeRange ||
+          invalidRepeatTimes
         }
       >
         Salvar lembrete
@@ -775,7 +886,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.4.0</span>
+              <span className="muted">Tomohu · v0.5.0</span>
             </div>
           )}
           {editor.kind === 'section' && (

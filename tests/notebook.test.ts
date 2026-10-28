@@ -9,6 +9,7 @@ import {
 import {
   formatReminderCountdown,
   formatReminderDate,
+  getReminderNextOccurrence,
   getReminderPriority,
 } from '../src/lib/reminders.ts'
 
@@ -185,4 +186,21 @@ test('multi-day reminders show their range and upcoming reminders are prioritize
   assert.ok(
     getReminderPriority(multiDay, now) < getReminderPriority(later, now),
   )
+})
+
+test('scheduled daily times find the next occurrence inside the selected period', () => {
+  const medicine = {
+    id: 'medicine',
+    title: 'Remédio',
+    date: '2026-11-02',
+    endDate: '2026-11-08',
+    schedule: 'time-range' as const,
+    repeatTimes: ['08:00', '20:00'],
+  }
+  const now = new Date(2026, 10, 3, 10, 0)
+  const next = getReminderNextOccurrence(medicine, now)
+  assert.equal(next?.getHours(), 20)
+  assert.equal(next?.getDate(), 3)
+  assert.equal(formatReminderCountdown(medicine, now), 'Faltam 10h 00min')
+  assert.match(formatReminderDate(medicine), /08:00, 20:00/)
 })

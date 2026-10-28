@@ -37,7 +37,10 @@ export function getReminderDate(reminder: Reminder): string {
 
 export function getReminderStart(reminder: Reminder): Date | null {
   if (reminder.schedule)
-    return localDate(reminder.date, reminder.startTime ?? '00:00')
+    return localDate(
+      reminder.date,
+      reminder.repeatTimes?.[0] ?? reminder.startTime ?? '00:00',
+    )
   const legacyDate = new Date(reminder.date)
   return Number.isNaN(legacyDate.getTime()) ? null : legacyDate
 }
@@ -49,11 +52,42 @@ export function getReminderEnd(reminder: Reminder): Date | null {
     end.setDate(end.getDate() + 1)
     return end
   }
-  if (reminder.schedule !== 'time-range' || !reminder.endTime) return null
+  if (reminder.schedule !== 'time-range') return null
+  if (reminder.repeatTimes?.length)
+    return localDate(reminder.endDate ?? reminder.date, '23:59')
+  if (!reminder.endTime) return null
   const start = getReminderStart(reminder)
   const end = localDate(reminder.endDate ?? reminder.date, reminder.endTime)
   if (!start || !end) return null
   return end > start ? end : null
+}
+
+export function getReminderNextOccurrence(
+  reminder: Reminder,
+  now = new Date(),
+): Date | null {
+  const times = reminder.repeatTimes
+  if (!times?.length) return getReminderStart(reminder)
+  const lastDay = localDate(reminder.endDate ?? reminder.date)
+  if (!lastDay) return null
+  const firstDay = localDate(reminder.date)
+  if (!firstDay) return null
+  const cursor = new Date(
+    Math.max(
+      firstDay.getTime(),
+      new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime(),
+    ),
+  )
+  const orderedTimes = [...times].sort()
+  while (cursor <= lastDay) {
+    const day = getDateInputValue(cursor)
+    for (const time of orderedTimes) {
+      const candidate = localDate(day, time)
+      if (candidate && candidate >= now) return candidate
+    }
+    cursor.setDate(cursor.getDate() + 1)
+  }
+  return null
 }
 
 export function formatReminderDate(reminder: Reminder): string {
@@ -69,6 +103,8 @@ export function formatReminderDate(reminder: Reminder): string {
     return `${dateFormatter.format(start)} · Dia todo`
   }
   if (reminder.schedule === 'time-range') {
+    if (reminder.repeatTimes?.length)
+      return `${dateFormatter.format(start)} — ${dateFormatter.format(end ?? start)} · ${reminder.repeatTimes.join(', ')}`
     if (isMultiDay && end)
       return `${dateFormatter.format(start)} ${reminder.startTime ?? '--:--'} → ${dateFormatter.format(end)} ${reminder.endTime ?? '--:--'}`
     return `${dateFormatter.format(start)} · ${reminder.startTime ?? '--:--'}–${reminder.endTime ?? '--:--'}`
@@ -85,7 +121,9 @@ export function formatReminderCountdown(
   reminder: Reminder,
   now = new Date(),
 ): string {
-  const start = getReminderStart(reminder)
+  const start = reminder.repeatTimes?.length
+    ? getReminderNextOccurrence(reminder, now)
+    : getReminderStart(reminder)
   if (!start) return ''
   const end = getReminderEnd(reminder)
   if (now >= start)
@@ -110,7 +148,9 @@ export function getReminderPriority(
   reminder: Reminder,
   now = new Date(),
 ): number {
-  const start = getReminderStart(reminder)
+  const start = reminder.repeatTimes?.length
+    ? getReminderNextOccurrence(reminder, now)
+    : getReminderStart(reminder)
   if (!start) return Number.POSITIVE_INFINITY
   const end = getReminderEnd(reminder)
   if (start > now) return start.getTime()

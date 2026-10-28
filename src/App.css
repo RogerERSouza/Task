@@ -791,6 +791,9 @@ legend {
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
+.reminder-schedule-options.three-options {
+  grid-template-columns: 1fr;
+}
 .reminder-schedule-option {
   min-height: 43px;
   border: 1px solid #8198bd38;
@@ -808,6 +811,47 @@ legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+.repeat-times-field .muted {
+  margin: -2px 0 10px;
+}
+.repeat-times-list {
+  display: grid;
+  gap: 8px;
+}
+.repeat-time,
+.add-repeat-time {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+.repeat-time input,
+.add-repeat-time input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #8198bd38;
+  border-radius: 9px;
+  background: #18243d;
+  color: #ecedf3;
+  padding: 10px 12px;
+  font: inherit;
+}
+.repeat-time button,
+.add-repeat-time button {
+  border: 1px solid #8198bd38;
+  border-radius: 9px;
+  background: #283855;
+  color: #d9e1f2;
+  padding: 9px 11px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.add-repeat-time {
+  margin-top: 10px;
+}
+.add-repeat-time button {
+  border-color: #edcf9460;
+  color: #f1d99d;
 }
 .range-warning {
   margin: -5px 0 0;

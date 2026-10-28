@@ -30,6 +30,13 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Lembretes ordenados pelo evento mais próximo; eventos encerrados ficam por último. — `0.4.0`
 - [x] Tipografia de lembretes e calendário mais legível. — `0.4.0`
 
+### `0.5.0` · Eventos recorrentes por período
+
+- [x] Fluxo de criação que explica primeiro se o evento acontece em um dia ou vários. — `0.5.0`
+- [x] Horários programados diariamente dentro de um período, com quantidade livre de horários. — `0.5.0`
+- [x] Opção clara de evento contínuo para início e término únicos. — `0.5.0`
+- [x] Contador direcionado ao próximo horário programado. — `0.5.0`
+
 ## Mini patches planejados
 
 - [ ] Trocar os controles atuais de ordenação por um único botão dropdown.

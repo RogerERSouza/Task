@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.5.0 — 2026-10-28
+
+### Alterado
+
+- Criação de lembretes agora começa escolhendo claramente entre um dia específico e vários dias.
+- Eventos de vários dias aceitam dia todo, evento contínuo ou horários programados diariamente.
+- Horários programados podem ser adicionados e removidos livremente; o contador aponta para o próximo horário dentro do período.
+- Campos de horário receberam uma apresentação mais integrada ao tema do aplicativo.
+
 ## 0.4.0 — 2026-10-28
 
 ### Alterado
