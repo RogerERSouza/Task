@@ -39,6 +39,7 @@ export interface Reminder {
   date: string
   schedule?: 'all-day' | 'time-range'
   startTime?: string
+  endDate?: string
   endTime?: string
   countdownFormat?:
     'automatic' | 'days-hours' | 'hours-minutes' | 'minutes-seconds'

@@ -43,21 +43,36 @@ export function getReminderStart(reminder: Reminder): Date | null {
 }
 
 export function getReminderEnd(reminder: Reminder): Date | null {
+  if (reminder.schedule === 'all-day') {
+    const end = localDate(reminder.endDate ?? reminder.date)
+    if (!end) return null
+    end.setDate(end.getDate() + 1)
+    return end
+  }
   if (reminder.schedule !== 'time-range' || !reminder.endTime) return null
   const start = getReminderStart(reminder)
-  const end = localDate(reminder.date, reminder.endTime)
+  const end = localDate(reminder.endDate ?? reminder.date, reminder.endTime)
   if (!start || !end) return null
-  if (end <= start) end.setDate(end.getDate() + 1)
-  return end
+  return end > start ? end : null
 }
 
 export function formatReminderDate(reminder: Reminder): string {
   const start = getReminderStart(reminder)
   if (!start) return 'Data inválida'
-  if (reminder.schedule === 'all-day')
+  const end = getReminderEnd(reminder)
+  const isMultiDay = Boolean(
+    reminder.endDate && reminder.endDate !== reminder.date,
+  )
+  if (reminder.schedule === 'all-day') {
+    if (isMultiDay && end)
+      return `${dateFormatter.format(start)} — ${dateFormatter.format(new Date(end.getTime() - 1))}`
     return `${dateFormatter.format(start)} · Dia todo`
-  if (reminder.schedule === 'time-range')
+  }
+  if (reminder.schedule === 'time-range') {
+    if (isMultiDay && end)
+      return `${dateFormatter.format(start)} ${reminder.startTime ?? '--:--'} → ${dateFormatter.format(end)} ${reminder.endTime ?? '--:--'}`
     return `${dateFormatter.format(start)} · ${reminder.startTime ?? '--:--'}–${reminder.endTime ?? '--:--'}`
+  }
   return new Intl.DateTimeFormat('pt-BR', {
     day: '2-digit',
     month: 'short',
@@ -72,31 +87,33 @@ export function formatReminderCountdown(
 ): string {
   const start = getReminderStart(reminder)
   if (!start) return ''
-  if (
-    reminder.schedule === 'all-day' &&
-    reminder.date === getDateInputValue(now)
-  )
-    return 'Hoje'
   const end = getReminderEnd(reminder)
-  if (now >= start) return end && now < end ? 'Em andamento' : 'Encerrado'
+  if (now >= start)
+    return end && now < end
+      ? reminder.schedule === 'all-day'
+        ? 'Hoje'
+        : 'Em andamento'
+      : 'Encerrado'
 
   const totalSeconds = Math.floor((start.getTime() - now.getTime()) / 1000)
   const days = Math.floor(totalSeconds / 86_400)
   const hours = Math.floor((totalSeconds % 86_400) / 3_600)
   const minutes = Math.floor((totalSeconds % 3_600) / 60)
   const seconds = totalSeconds % 60
-  const format = reminder.countdownFormat ?? 'automatic'
-  const selectedFormat =
-    format === 'automatic'
-      ? days > 0
-        ? 'days-hours'
-        : hours > 0
-          ? 'hours-minutes'
-          : 'minutes-seconds'
-      : format
+  if (days > 0) return `Faltam ${days}d ${String(hours).padStart(2, '0')}h`
+  if (hours > 0)
+    return `Faltam ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}min`
+  return `Faltam ${String(minutes).padStart(2, '0')}min ${String(seconds).padStart(2, '0')}s`
+}
 
-  if (selectedFormat === 'days-hours') return `Faltam ${days}d ${hours}h`
-  if (selectedFormat === 'hours-minutes')
-    return `Faltam ${Math.floor(totalSeconds / 3_600)}h ${minutes}min`
-  return `Faltam ${Math.floor(totalSeconds / 60)}min ${seconds}s`
+export function getReminderPriority(
+  reminder: Reminder,
+  now = new Date(),
+): number {
+  const start = getReminderStart(reminder)
+  if (!start) return Number.POSITIVE_INFINITY
+  const end = getReminderEnd(reminder)
+  if (start > now) return start.getTime()
+  if (end && end > now) return now.getTime()
+  return Number.MAX_SAFE_INTEGER + start.getTime()
 }

@@ -149,24 +149,27 @@ h2 {
 }
 .reminder-date {
   display: block;
-  font-size: 9px;
-  letter-spacing: 0.7px;
-  color: #675c4f;
-  margin-bottom: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #554a3f;
+  line-height: 1.4;
+  margin-bottom: 10px;
 }
 .reminder-paper strong {
   display: block;
-  line-height: 1.45;
-  font-family: Georgia, serif;
-  font-size: 19px;
-  font-weight: 400;
+  line-height: 1.35;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 650;
   overflow-wrap: anywhere;
 }
 .reminder-countdown {
   display: block;
   margin-top: 13px;
-  color: #675c4f;
-  font-size: 10px;
+  color: #4d4135;
+  font-size: 12px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .section-count {
@@ -708,6 +711,13 @@ legend {
   padding: 14px;
   background: #18243d;
 }
+.calendar-label {
+  display: block;
+  margin-bottom: 10px;
+  color: #c3cde0;
+  font-size: 13px;
+  font-weight: 600;
+}
 .calendar-header {
   display: flex;
   align-items: center;
@@ -739,7 +749,7 @@ legend {
 .calendar-weekday {
   padding: 4px 0 7px;
   color: #91a2c1;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
 }
 .calendar-empty,
@@ -751,7 +761,7 @@ legend {
   border-radius: 8px;
   background: transparent;
   color: #c9d3e6;
-  font-size: 11px;
+  font-size: 12px;
 }
 .calendar-day:hover {
   background: #ffffff0b;
@@ -787,7 +797,7 @@ legend {
   border-radius: 10px;
   background: #18243d;
   color: #b9c7df;
-  font-size: 11px;
+  font-size: 12px;
 }
 .reminder-schedule-option.selected {
   border-color: #edcf94;
@@ -798,6 +808,12 @@ legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+.range-warning {
+  margin: -5px 0 0;
+  color: #f0b0a8;
+  font-size: 12px;
+  line-height: 1.45;
 }
 .editor-panel {
   padding: 28px;

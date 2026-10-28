@@ -90,6 +90,7 @@ export function isNotebook(value: unknown): value is Notebook {
           reminder.schedule === 'all-day' ||
           reminder.schedule === 'time-range') &&
         (reminder.startTime === undefined || isText(reminder.startTime)) &&
+        (reminder.endDate === undefined || isText(reminder.endDate)) &&
         (reminder.endTime === undefined || isText(reminder.endTime)) &&
         (reminder.countdownFormat === undefined ||
           reminder.countdownFormat === 'automatic' ||

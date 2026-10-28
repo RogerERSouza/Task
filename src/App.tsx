@@ -19,7 +19,7 @@ import {
   formatReminderDate,
   getDateInputValue,
   getReminderDate,
-  getReminderStart,
+  getReminderPriority,
 } from './lib/reminders'
 import type { ReminderDraft } from './lib/reminders'
 import type { Content, ContentKind, Reminder, Section } from './types'
@@ -206,10 +206,13 @@ function ReminderForm({
   onSave: (values: ReminderDraft) => void
   onRemove: () => void
 }) {
+  const initialDate = reminder ? getReminderDate(reminder) : getDateInputValue()
   const [title, setTitle] = useState(reminder?.title ?? '')
-  const [date, setDate] = useState(() =>
-    reminder ? getReminderDate(reminder) : getDateInputValue(),
+  const [date, setDate] = useState(initialDate)
+  const [spansMultipleDays, setSpansMultipleDays] = useState(
+    Boolean(reminder?.endDate && reminder.endDate !== initialDate),
   )
+  const [endDate, setEndDate] = useState(reminder?.endDate ?? initialDate)
   const [schedule, setSchedule] = useState<'all-day' | 'time-range'>(
     reminder?.schedule ?? (reminder ? 'time-range' : 'all-day'),
   )
@@ -220,18 +223,24 @@ function ReminderForm({
   const [endTime, setEndTime] = useState(
     reminder?.endTime ?? getTimeOneHourLater(legacyTime ?? '09:00'),
   )
-  const [countdownFormat, setCountdownFormat] = useState<
-    NonNullable<Reminder['countdownFormat']>
-  >(reminder?.countdownFormat ?? 'automatic')
+  const invalidDateRange = spansMultipleDays && endDate < date
+  const invalidTimeRange =
+    schedule === 'time-range' &&
+    (!endTime || (!spansMultipleDays && endTime <= startTime))
+  function changeStartDate(nextDate: string) {
+    setDate(nextDate)
+    if (!spansMultipleDays) setEndDate(nextDate)
+  }
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    if (title.trim() && date && (schedule === 'all-day' || endTime))
+    if (title.trim() && date && !invalidDateRange && !invalidTimeRange)
       onSave({
         title: title.trim(),
         date,
         schedule,
+        ...(spansMultipleDays ? { endDate } : {}),
         ...(schedule === 'time-range' ? { startTime, endTime } : {}),
-        countdownFormat,
+        countdownFormat: 'automatic',
       })
   }
   return (
@@ -246,7 +255,50 @@ function ReminderForm({
           placeholder="O que você quer lembrar?"
         />
       </label>
-      <CalendarPicker value={date} onChange={setDate} />
+      <CalendarPicker
+        label="Data de início"
+        value={date}
+        onChange={changeStartDate}
+      />
+      <fieldset className="reminder-schedule-field">
+        <legend>Duração</legend>
+        <div className="reminder-schedule-options" role="group">
+          <button
+            type="button"
+            className={
+              !spansMultipleDays
+                ? 'reminder-schedule-option selected'
+                : 'reminder-schedule-option'
+            }
+            aria-pressed={!spansMultipleDays}
+            onClick={() => {
+              setSpansMultipleDays(false)
+              setEndDate(date)
+            }}
+          >
+            Um dia
+          </button>
+          <button
+            type="button"
+            className={
+              spansMultipleDays
+                ? 'reminder-schedule-option selected'
+                : 'reminder-schedule-option'
+            }
+            aria-pressed={spansMultipleDays}
+            onClick={() => setSpansMultipleDays(true)}
+          >
+            Vários dias
+          </button>
+        </div>
+      </fieldset>
+      {spansMultipleDays && (
+        <CalendarPicker
+          label="Data de término"
+          value={endDate}
+          onChange={setEndDate}
+        />
+      )}
       <fieldset className="reminder-schedule-field">
         <legend>Quando acontece?</legend>
         <div className="reminder-schedule-options" role="group">
@@ -298,30 +350,24 @@ function ReminderForm({
           </label>
         </div>
       )}
-      <label className="field">
-        <span>Contador até o evento</span>
-        <select
-          value={countdownFormat}
-          onChange={(event) =>
-            setCountdownFormat(
-              event.target.value as NonNullable<Reminder['countdownFormat']>,
-            )
-          }
-        >
-          <option value="automatic">Automático</option>
-          <option value="days-hours">Dias e horas</option>
-          <option value="hours-minutes">Horas e minutos</option>
-          <option value="minutes-seconds">Minutos e segundos</option>
-        </select>
-      </label>
+      {invalidDateRange && (
+        <p className="range-warning" role="alert">
+          A data de término precisa ser igual ou posterior à data de início.
+        </p>
+      )}
+      {invalidTimeRange && !invalidDateRange && (
+        <p className="range-warning" role="alert">
+          O horário de término precisa ser posterior ao início no mesmo dia.
+        </p>
+      )}
       <p className="muted">
-        Aparece no início. As notificações serão adicionadas em outra update.
+        O contador escolhe automaticamente a melhor unidade de tempo.
       </p>
       <button
         className="primary-button"
         type="submit"
         disabled={
-          !title.trim() || !date || (schedule === 'time-range' && !endTime)
+          !title.trim() || !date || invalidDateRange || invalidTimeRange
         }
       >
         Salvar lembrete
@@ -377,8 +423,7 @@ function App() {
   )
   const reminders = [...notebook.reminders].sort(
     (first, second) =>
-      (getReminderStart(first)?.getTime() ?? Number.POSITIVE_INFINITY) -
-      (getReminderStart(second)?.getTime() ?? Number.POSITIVE_INFINITY),
+      getReminderPriority(first, now) - getReminderPriority(second, now),
   )
 
   function openSection(id?: string) {
@@ -730,7 +775,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.3.0</span>
+              <span className="muted">Tomohu · v0.4.0</span>
             </div>
           )}
           {editor.kind === 'section' && (

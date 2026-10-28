@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.4.0 — 2026-10-28
+
+### Alterado
+
+- Lembretes agora podem durar um dia ou vários dias, com data e horário de início e término quando necessário.
+- O contador escolhe automaticamente a leitura mais útil: dias/horas, horas/minutos ou minutos/segundos.
+- Lembretes próximos aparecem antes dos mais distantes; eventos em andamento vêm antes dos encerrados.
+- Cartões e controles de calendário receberam tipografia maior e contraste mais claro.
+
 ## 0.3.0 — 2026-10-28
 
 ### Alterado

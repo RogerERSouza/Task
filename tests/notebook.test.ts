@@ -9,6 +9,7 @@ import {
 import {
   formatReminderCountdown,
   formatReminderDate,
+  getReminderPriority,
 } from '../src/lib/reminders.ts'
 
 test('counter history includes increases and corrections', () => {
@@ -106,6 +107,7 @@ test('saved data keeps legacy reminders and accepts scheduled reminders', () => 
           date: '2026-11-02',
           schedule: 'time-range',
           startTime: '09:00',
+          endDate: '2026-11-03',
           endTime: '10:00',
           countdownFormat: 'days-hours',
         },
@@ -137,7 +139,7 @@ test('reminder dates and countdowns use the selected schedule', () => {
   assert.match(formatReminderDate(reminder), /02 de nov\./)
   assert.equal(
     formatReminderCountdown(reminder, new Date(2026, 10, 2, 7, 30)),
-    'Faltam 1h 30min',
+    'Faltam 01h 30min',
   )
   assert.equal(
     formatReminderCountdown(reminder, new Date(2026, 10, 2, 9, 30)),
@@ -154,5 +156,33 @@ test('reminder dates and countdowns use the selected schedule', () => {
       new Date(2026, 10, 2, 15, 30),
     ),
     'Hoje',
+  )
+})
+
+test('multi-day reminders show their range and upcoming reminders are prioritized', () => {
+  const multiDay = {
+    id: 'trip',
+    title: 'Viagem',
+    date: '2026-11-02',
+    endDate: '2026-11-04',
+    schedule: 'time-range' as const,
+    startTime: '09:00',
+    endTime: '18:00',
+  }
+  assert.match(formatReminderDate(multiDay), /02 de nov\..*04 de nov\./)
+  assert.equal(
+    formatReminderCountdown(multiDay, new Date(2026, 10, 1, 9, 0)),
+    'Faltam 1d 00h',
+  )
+
+  const now = new Date(2026, 10, 1, 8, 0)
+  const later = {
+    ...multiDay,
+    id: 'later',
+    date: '2026-11-05',
+    endDate: '2026-11-06',
+  }
+  assert.ok(
+    getReminderPriority(multiDay, now) < getReminderPriority(later, now),
   )
 })

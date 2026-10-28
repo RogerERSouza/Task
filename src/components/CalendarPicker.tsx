@@ -32,9 +32,11 @@ function getDays(month: Date): Array<Date | null> {
 export function CalendarPicker({
   value,
   onChange,
+  label = 'Escolher data',
 }: {
   value: string
   onChange: (date: string) => void
+  label?: string
 }) {
   const [visibleMonth, setVisibleMonth] = useState(() => getMonthStart(value))
   const today = getDateInputValue()
@@ -44,7 +46,8 @@ export function CalendarPicker({
     setVisibleMonth(getMonthStart(date))
   }
   return (
-    <section className="calendar-picker" aria-label="Escolher data">
+    <section className="calendar-picker" aria-label={label}>
+      <span className="calendar-label">{label}</span>
       <div className="calendar-header">
         <button
           type="button"

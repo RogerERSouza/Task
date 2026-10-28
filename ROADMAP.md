@@ -22,6 +22,14 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Contador até o evento, com formatos adequados ao tempo restante. — `0.3.0`
 - [x] Base preparada para notificações futuras. — `0.3.0`
 
+### `0.4.0` · Duração e prioridade de eventos
+
+- [x] Eventos de um dia ou de vários dias, com início e término independentes. — `0.4.0`
+- [x] Eventos de vários dias também podem ser configurados como dia todo. — `0.4.0`
+- [x] Contador automático, com leitura adaptada ao tempo restante. — `0.4.0`
+- [x] Lembretes ordenados pelo evento mais próximo; eventos encerrados ficam por último. — `0.4.0`
+- [x] Tipografia de lembretes e calendário mais legível. — `0.4.0`
+
 ## Mini patches planejados
 
 - [ ] Trocar os controles atuais de ordenação por um único botão dropdown.
