@@ -38,6 +38,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Contador direcionado ao próximo horário programado. — `0.5.0`
 - [x] Ajustes de clareza, edição e seleção de horários. — `0.5.1`
 - [x] Regra visual e técnica para horários programados únicos. — `0.5.2`
+- [x] Alerta contextual de horário repetido e painéis sem rolagem lateral. — `0.5.3`
 
 ## Mini patches planejados
 

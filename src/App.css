@@ -534,6 +534,13 @@ textarea::placeholder {
   border: 1px solid #8198bd30;
   border-radius: 18px;
   box-shadow: 0 24px 80px #0007;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.modal::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 .modal::backdrop {
   background: #080f21b8;
@@ -886,6 +893,10 @@ legend {
   box-shadow: 0 14px 32px #08102199;
   padding: 12px;
 }
+.reminder-time-range > .time-picker:last-child .time-picker-panel {
+  right: 0;
+  left: auto;
+}
 .time-picker-panel label {
   display: grid;
   gap: 6px;
@@ -924,7 +935,7 @@ legend {
   line-height: 1.45;
 }
 .schedule-hint {
-  margin: -12px 0 -2px;
+  margin: 8px 0 0;
   color: #f0a8a2;
   font-size: 11px;
   line-height: 1.4;

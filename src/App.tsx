@@ -237,6 +237,8 @@ function ReminderForm({
     reminder?.repeatTimes?.length ? reminder.repeatTimes : ['09:00'],
   )
   const [timeToAdd, setTimeToAdd] = useState('14:00')
+  const [showDuplicateTimeWarning, setShowDuplicateTimeWarning] =
+    useState(false)
   const [activeTimePickerId, setActiveTimePickerId] = useState<string | null>(
     null,
   )
@@ -284,6 +286,11 @@ function ReminderForm({
           placeholder="O que você quer lembrar?"
         />
       </label>
+      {reminder && (
+        <button type="button" className="text-button danger" onClick={onRemove}>
+          Concluir e remover lembrete
+        </button>
+      )}
       <fieldset className="reminder-schedule-field">
         <legend>O evento acontecerá em?</legend>
         <div className="reminder-schedule-options" role="group">
@@ -383,11 +390,6 @@ function ReminderForm({
           )}
         </div>
       </fieldset>
-      {spansMultipleDays && occurrence === 'daily-times' && (
-        <p className="schedule-hint" role="status">
-          Não é possível colocar 2 horários iguais como alarmes.
-        </p>
-      )}
       {occurrence === 'continuous' && (
         <div className="reminder-time-range">
           <TimePicker
@@ -465,13 +467,20 @@ function ReminderForm({
             <button
               type="button"
               onClick={() => {
-                if (!repeatTimes.includes(timeToAdd))
+                if (!repeatTimes.includes(timeToAdd)) {
                   setRepeatTimes((times) => [...times, timeToAdd])
+                  setShowDuplicateTimeWarning(false)
+                } else setShowDuplicateTimeWarning(true)
               }}
             >
               + Adicionar horário
             </button>
           </div>
+          {showDuplicateTimeWarning && (
+            <p className="schedule-hint" role="alert">
+              Não é possível colocar 2 horários iguais como alarmes.
+            </p>
+          )}
         </fieldset>
       )}
       {invalidDateRange && (
@@ -505,11 +514,6 @@ function ReminderForm({
       >
         Salvar lembrete
       </button>
-      {reminder && (
-        <button type="button" className="text-button danger" onClick={onRemove}>
-          Concluir e remover lembrete
-        </button>
-      )}
     </form>
   )
 }

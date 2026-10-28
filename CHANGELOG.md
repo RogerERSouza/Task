@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.5.3 — 2026-10-28
+
+### Corrigido
+
+- O modal esconde as barras de rolagem visualmente sem impedir a rolagem em telas menores.
+- Painéis de horário não criam mais rolagem lateral e o painel da segunda hora abre para dentro do modal.
+- O aviso de horário duplicado aparece abaixo de “Novo horário” apenas após a tentativa de adicionar um alarme repetido.
+- Ao editar um lembrete, a ação de concluir ficou antes das configurações de salvamento.
+
 ## 0.5.2 — 2026-10-28
 
 ### Corrigido
