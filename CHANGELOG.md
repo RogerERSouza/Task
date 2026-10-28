@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.5.2 — 2026-10-28
+
+### Corrigido
+
+- Horários programados mostram o aviso de que alarmes duplicados não são aceitos.
+- Apenas um painel de seleção de horário pode ficar aberto por vez.
+- Ao abrir outro horário ou remover um item, o painel anterior fecha mantendo o valor já escolhido.
+
 ## 0.5.1 — 2026-10-28
 
 ### Corrigido

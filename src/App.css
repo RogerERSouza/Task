@@ -923,6 +923,12 @@ legend {
   font-size: 12px;
   line-height: 1.45;
 }
+.schedule-hint {
+  margin: -12px 0 -2px;
+  color: #f0a8a2;
+  font-size: 11px;
+  line-height: 1.4;
+}
 .editor-panel {
   padding: 28px;
   background: #202d47;

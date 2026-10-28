@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 function clamp(value: number, maximum: number): number {
   if (!Number.isFinite(value)) return 0
   return Math.min(Math.max(Math.trunc(value), 0), maximum)
@@ -10,15 +8,21 @@ function toTime(hour: number, minute: number): string {
 }
 
 export function TimePicker({
+  id,
   label,
   value,
   onChange,
+  activeId,
+  onActiveChange,
 }: {
+  id: string
   label: string
   value: string
   onChange: (time: string) => void
+  activeId: string | null
+  onActiveChange: (id: string | null) => void
 }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const isOpen = activeId === id
   const [hour, minute] = value.split(':').map(Number)
   return (
     <div className="time-picker">
@@ -27,7 +31,7 @@ export function TimePicker({
         type="button"
         className="time-picker-trigger"
         aria-expanded={isOpen}
-        onClick={() => setIsOpen((open) => !open)}
+        onClick={() => onActiveChange(isOpen ? null : id)}
       >
         {toTime(hour, minute)}
         <span aria-hidden="true">⌄</span>
@@ -59,7 +63,7 @@ export function TimePicker({
               }
             />
           </label>
-          <button type="button" onClick={() => setIsOpen(false)}>
+          <button type="button" onClick={() => onActiveChange(null)}>
             Pronto
           </button>
         </div>

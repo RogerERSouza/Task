@@ -237,6 +237,9 @@ function ReminderForm({
     reminder?.repeatTimes?.length ? reminder.repeatTimes : ['09:00'],
   )
   const [timeToAdd, setTimeToAdd] = useState('14:00')
+  const [activeTimePickerId, setActiveTimePickerId] = useState<string | null>(
+    null,
+  )
   const invalidDateRange = spansMultipleDays && endDate < date
   const invalidTimeRange =
     occurrence === 'continuous' &&
@@ -380,17 +383,28 @@ function ReminderForm({
           )}
         </div>
       </fieldset>
+      {spansMultipleDays && occurrence === 'daily-times' && (
+        <p className="schedule-hint" role="status">
+          Não é possível colocar 2 horários iguais como alarmes.
+        </p>
+      )}
       {occurrence === 'continuous' && (
         <div className="reminder-time-range">
           <TimePicker
+            id="continuous-start"
             label="Horário de início"
             value={startTime}
             onChange={setStartTime}
+            activeId={activeTimePickerId}
+            onActiveChange={setActiveTimePickerId}
           />
           <TimePicker
+            id="continuous-end"
             label="Horário de término"
             value={endTime}
             onChange={setEndTime}
+            activeId={activeTimePickerId}
+            onActiveChange={setActiveTimePickerId}
           />
         </div>
       )}
@@ -404,6 +418,7 @@ function ReminderForm({
             {repeatTimes.map((time, index) => (
               <div className="repeat-time" key={`${time}-${index}`}>
                 <TimePicker
+                  id={`repeat-${index}`}
                   label={`Horário ${index + 1}`}
                   value={time}
                   onChange={(nextTime) => {
@@ -420,15 +435,18 @@ function ReminderForm({
                       ),
                     )
                   }}
+                  activeId={activeTimePickerId}
+                  onActiveChange={setActiveTimePickerId}
                 />
                 <button
                   type="button"
                   aria-label={`Remover horário ${time}`}
-                  onClick={() =>
+                  onClick={() => {
+                    setActiveTimePickerId(null)
                     setRepeatTimes((times) =>
                       times.filter((_, currentIndex) => currentIndex !== index),
                     )
-                  }
+                  }}
                 >
                   Remover
                 </button>
@@ -437,9 +455,12 @@ function ReminderForm({
           </div>
           <div className="add-repeat-time">
             <TimePicker
+              id="new-repeat-time"
               label="Novo horário"
               value={timeToAdd}
               onChange={setTimeToAdd}
+              activeId={activeTimePickerId}
+              onActiveChange={setActiveTimePickerId}
             />
             <button
               type="button"
@@ -887,7 +908,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.5.1</span>
+              <span className="muted">Tomohu · v0.5.2</span>
             </div>
           )}
           {editor.kind === 'section' && (
