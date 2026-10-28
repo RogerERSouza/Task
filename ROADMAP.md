@@ -61,6 +61,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [ ] Sessões privadas protegidas por senha.
 - [ ] Criptografia real para conteúdo privado e proteção adequada de dados sensíveis.
 - [ ] Notificações e alarmes de eventos, configuráveis como em calendários.
+- [ ] Lembrete flash: criação instantânea com apenas um campo de texto; ao adicionar, já começa a avisar a cada 10 minutos por padrão. Configurações como intervalo, notificação/alarme, concluir e adiar ficam opcionais, disponíveis somente para quem quiser detalhar.
 
 ## Visão de marco
 
