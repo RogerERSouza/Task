@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createInitialNotebook } from '../data/initialNotebook'
-import { isNotebook, STORAGE_KEY } from '../lib/notebook'
+import { parseNotebookBackup, STORAGE_KEY } from '../lib/notebook'
 import type { Notebook } from '../types'
 
 function loadNotebook(): {
@@ -12,8 +12,7 @@ function loadNotebook(): {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (!stored)
       return { notebook: createInitialNotebook(), error: '', blocked: false }
-    const parsed: unknown = JSON.parse(stored)
-    if (!isNotebook(parsed)) throw new Error('Invalid notebook')
+    const parsed = parseNotebookBackup(stored)
     return { notebook: parsed, error: '', blocked: false }
   } catch {
     return {
@@ -29,6 +28,20 @@ export function useNotebook() {
   const [initial] = useState(loadNotebook)
   const [notebook, setNotebook] = useState(initial.notebook)
   const [storageError, setStorageError] = useState(initial.error)
+
+  function replaceNotebook(nextNotebook: Notebook): boolean {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextNotebook))
+      setNotebook(nextNotebook)
+      setStorageError('')
+      return true
+    } catch {
+      setStorageError(
+        'Não foi possível importar. O armazenamento pode estar cheio ou bloqueado.',
+      )
+      return false
+    }
+  }
 
   useEffect(() => {
     if (initial.blocked) return
@@ -50,5 +63,5 @@ export function useNotebook() {
     }
   }, [notebook, initial.blocked])
 
-  return { notebook, setNotebook, storageError }
+  return { notebook, setNotebook, replaceNotebook, storageError }
 }

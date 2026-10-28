@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.6.0 — 2026-10-28
+
+### Adicionado
+
+- Ajustes agora permitem importar um backup JSON válido do Tomohu.
+- Antes de substituir os dados atuais, o app valida o arquivo, pede confirmação e oferece exportar uma cópia de segurança.
+- Um backup importado também consegue recuperar o salvamento quando os dados locais anteriores não puderem ser lidos.
+
 ## 0.5.5 — 2026-10-28
 
 ### Adicionado

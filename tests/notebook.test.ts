@@ -5,6 +5,7 @@ import {
   getCounterTotal,
   getSectionPath,
   isNotebook,
+  parseNotebookBackup,
 } from '../src/lib/notebook.ts'
 import {
   formatReminderCountdown,
@@ -84,6 +85,20 @@ test('saved data validation rejects malformed content and unsupported versions',
     false,
   )
   assert.equal(isNotebook(null), false)
+})
+
+test('backup import accepts valid data and rejects invalid JSON or a wrong schema', () => {
+  const backup = {
+    schemaVersion: 1,
+    sections: [],
+    contents: [],
+    reminders: [],
+  }
+  assert.deepEqual(parseNotebookBackup(JSON.stringify(backup)), backup)
+  assert.throws(() => parseNotebookBackup('{invalid'))
+  assert.throws(() =>
+    parseNotebookBackup(JSON.stringify({ ...backup, schemaVersion: 2 })),
+  )
 })
 
 test('saved data keeps legacy reminders and accepts scheduled reminders', () => {

@@ -47,6 +47,32 @@
   flex-direction: column;
   gap: 18px;
 }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.import-backup-panel {
+  display: grid;
+  gap: 16px;
+  color: #d4ddef;
+  line-height: 1.55;
+}
+.import-backup-panel strong {
+  overflow-wrap: anywhere;
+  color: #f1d99d;
+}
+.import-backup-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 .reminders-section > .subheading {
   margin-bottom: 6px;
 }

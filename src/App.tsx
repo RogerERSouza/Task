@@ -1,5 +1,5 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
-import type { FormEvent } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import { CalendarPicker } from './components/CalendarPicker'
 import { ContentCard } from './components/ContentCard'
 import { ContentEditor } from './components/ContentEditor'
@@ -13,6 +13,7 @@ import {
   createContent,
   getCounterTotal,
   getSectionPath,
+  parseNotebookBackup,
   SECTION_COLORS,
 } from './lib/notebook'
 import {
@@ -24,7 +25,7 @@ import {
   getReminderPriority,
 } from './lib/reminders'
 import type { ReminderDraft } from './lib/reminders'
-import type { Content, ContentKind, Reminder, Section } from './types'
+import type { Content, ContentKind, Notebook, Reminder, Section } from './types'
 import './App.css'
 
 type Editor =
@@ -33,6 +34,7 @@ type Editor =
   | { kind: 'settings' }
   | { kind: 'reminder'; reminder?: Reminder }
   | { kind: 'expired-reminder'; reminder: Reminder }
+  | { kind: 'import-backup'; backup: Notebook; fileName: string }
   | null
 
 function subscribeToHash(onChange: () => void) {
@@ -558,7 +560,7 @@ function ReminderForm({
 }
 
 function App() {
-  const { notebook, setNotebook, storageError } = useNotebook()
+  const { notebook, setNotebook, replaceNotebook, storageError } = useNotebook()
   const hash = useSyncExternalStore(subscribeToHash, getHash)
   const [routeKind, routeId] = hash.slice(1).split('/')
   const currentContent =
@@ -576,6 +578,8 @@ function App() {
   const [query, setQuery] = useState('')
   const [sortOrder, setSortOrder] = useState('manual')
   const [editor, setEditor] = useState<Editor>(null)
+  const [importError, setImportError] = useState('')
+  const importInputRef = useRef<HTMLInputElement>(null)
   const [now, setNow] = useState(() => new Date())
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000)
@@ -650,6 +654,20 @@ function App() {
     link.download = `tomohu-backup-${new Date().toISOString().slice(0, 10)}.json`
     link.click()
     setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+  async function chooseBackup(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    try {
+      const backup = parseNotebookBackup(await file.text())
+      setImportError('')
+      setEditor({ kind: 'import-backup', backup, fileName: file.name })
+    } catch {
+      setImportError(
+        'Não foi possível importar esse arquivo. Escolha um backup JSON válido do Tomohu.',
+      )
+    }
   }
 
   return (
@@ -931,6 +949,13 @@ function App() {
           <span>Ajustes</span>
         </button>
       </nav>
+      <input
+        ref={importInputRef}
+        className="visually-hidden"
+        type="file"
+        accept="application/json,.json"
+        onChange={chooseBackup}
+      />
       {editor && (
         <Modal
           title={
@@ -944,9 +969,11 @@ function App() {
                   ? 'Ajustes'
                   : editor.kind === 'expired-reminder'
                     ? 'Prazo encerrado'
-                    : editor.reminder
-                      ? 'Editar lembrete'
-                      : 'Novo lembrete'
+                    : editor.kind === 'import-backup'
+                      ? 'Importar backup'
+                      : editor.reminder
+                        ? 'Editar lembrete'
+                        : 'Novo lembrete'
           }
           onClose={() => setEditor(null)}
         >
@@ -956,8 +983,56 @@ function App() {
                 <Icon name="download" />
                 Exportar cópia dos dados
               </button>
+              <button
+                className="secondary-button"
+                onClick={() => importInputRef.current?.click()}
+              >
+                Importar cópia dos dados
+              </button>
+              {importError && (
+                <p className="form-warning" role="alert">
+                  {importError}
+                </p>
+              )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.5.4</span>
+              <span className="muted">Tomohu · v0.6.0</span>
+            </div>
+          )}
+          {editor.kind === 'import-backup' && (
+            <div className="import-backup-panel">
+              <p>
+                O backup <strong>{editor.fileName}</strong> está válido. Ao
+                continuar, ele substituirá os dados atuais deste navegador.
+              </p>
+              <p className="muted">
+                Exporte uma cópia atual antes de continuar, caso queira voltar
+                atrás depois.
+              </p>
+              <button className="secondary-button" onClick={exportNotebook}>
+                <Icon name="download" />
+                Exportar cópia atual
+              </button>
+              <div className="import-backup-actions">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => setEditor({ kind: 'settings' })}
+                >
+                  Voltar
+                </button>
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={() => {
+                    if (replaceNotebook(editor.backup)) {
+                      setEditor(null)
+                      openSection()
+                    }
+                  }}
+                >
+                  Substituir dados
+                </button>
+              </div>
             </div>
           )}
           {editor.kind === 'section' && (

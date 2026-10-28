@@ -80,7 +80,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ### Dados, backup e dispositivos
 
-- [ ] Importar backup JSON pela interface, complementando a exportação já existente.
+- [x] Importar backup JSON pela interface, com validação e confirmação antes de substituir os dados atuais. — `0.6.0`
 - [ ] Passar o projeto para uma **PWA** instalável: abrir como app no PC/celular e ter suporte offline onde for possível.
 - [ ] Definir corretamente a estratégia de armazenamento antes de dados sensíveis ou contas.
 

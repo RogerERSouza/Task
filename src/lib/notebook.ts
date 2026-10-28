@@ -52,6 +52,12 @@ export function createContent(
   }
 }
 
+export function parseNotebookBackup(text: string): Notebook {
+  const parsed: unknown = JSON.parse(text)
+  if (!isNotebook(parsed)) throw new Error('Invalid notebook backup')
+  return parsed
+}
+
 export function isNotebook(value: unknown): value is Notebook {
   if (!value || typeof value !== 'object') return false
   const data = value as Record<string, unknown>
