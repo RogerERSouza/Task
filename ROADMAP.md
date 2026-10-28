@@ -36,6 +36,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Horários programados diariamente dentro de um período, com quantidade livre de horários. — `0.5.0`
 - [x] Opção clara de evento contínuo para início e término únicos. — `0.5.0`
 - [x] Contador direcionado ao próximo horário programado. — `0.5.0`
+- [x] Ajustes de clareza, edição e seleção de horários. — `0.5.1`
 
 ## Mini patches planejados
 

@@ -95,6 +95,9 @@ export function isNotebook(value: unknown): value is Notebook {
         (reminder.repeatTimes === undefined ||
           (Array.isArray(reminder.repeatTimes) &&
             reminder.repeatTimes.every(isText))) &&
+        (reminder.duration === undefined ||
+          reminder.duration === 'single-day' ||
+          reminder.duration === 'multi-day') &&
         (reminder.countdownFormat === undefined ||
           reminder.countdownFormat === 'automatic' ||
           reminder.countdownFormat === 'days-hours' ||

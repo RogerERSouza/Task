@@ -110,6 +110,7 @@ test('saved data keeps legacy reminders and accepts scheduled reminders', () => 
           startTime: '09:00',
           endDate: '2026-11-03',
           endTime: '10:00',
+          duration: 'multi-day',
           countdownFormat: 'days-hours',
         },
       ],
@@ -121,6 +122,20 @@ test('saved data keeps legacy reminders and accepts scheduled reminders', () => 
       ...base,
       reminders: [
         { id: 'invalid', title: 'Erro', date: '2026-11-02', schedule: 'soon' },
+      ],
+    }),
+    false,
+  )
+  assert.equal(
+    isNotebook({
+      ...base,
+      reminders: [
+        {
+          id: 'invalid-duration',
+          title: 'Erro',
+          date: '2026-11-02',
+          duration: 'forever',
+        },
       ],
     }),
     false,

@@ -6,6 +6,7 @@ import { ContentEditor } from './components/ContentEditor'
 import { Icon } from './components/Icon'
 import { Modal } from './components/Modal'
 import { SectionCard } from './components/SectionCard'
+import { TimePicker } from './components/TimePicker'
 import { useNotebook } from './hooks/useNotebook'
 import {
   CONTENT_LABELS,
@@ -210,7 +211,8 @@ function ReminderForm({
   const [title, setTitle] = useState(reminder?.title ?? '')
   const [date, setDate] = useState(initialDate)
   const [spansMultipleDays, setSpansMultipleDays] = useState(
-    Boolean(reminder?.endDate && reminder.endDate !== initialDate),
+    reminder?.duration === 'multi-day' ||
+      Boolean(reminder?.endDate && reminder.endDate !== initialDate),
   )
   const [endDate, setEndDate] = useState(reminder?.endDate ?? initialDate)
   const [occurrence, setOccurrence] = useState<
@@ -243,7 +245,7 @@ function ReminderForm({
     occurrence === 'daily-times' && repeatTimes.length === 0
   function changeStartDate(nextDate: string) {
     setDate(nextDate)
-    if (!spansMultipleDays) setEndDate(nextDate)
+    setEndDate(nextDate)
   }
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -258,6 +260,7 @@ function ReminderForm({
         title: title.trim(),
         date,
         schedule: occurrence === 'all-day' ? 'all-day' : 'time-range',
+        duration: spansMultipleDays ? 'multi-day' : 'single-day',
         ...(spansMultipleDays ? { endDate } : {}),
         ...(occurrence === 'continuous' ? { startTime, endTime } : {}),
         ...(occurrence === 'daily-times'
@@ -292,9 +295,10 @@ function ReminderForm({
             onClick={() => {
               setSpansMultipleDays(false)
               setEndDate(date)
+              if (occurrence === 'daily-times') setOccurrence('all-day')
             }}
           >
-            Um dia específico
+            Dia específico
           </button>
           <button
             type="button"
@@ -326,7 +330,7 @@ function ReminderForm({
         <legend>
           {spansMultipleDays
             ? 'Como acontece nesse período?'
-            : 'O evento ocorre em?'}
+            : 'Em que momento o evento ocorre?'}
         </legend>
         <div
           className={
@@ -358,7 +362,7 @@ function ReminderForm({
             aria-pressed={occurrence === 'continuous'}
             onClick={() => setOccurrence('continuous')}
           >
-            {spansMultipleDays ? 'Contínuo' : 'Com horário'}
+            {spansMultipleDays ? 'Contínuo' : 'Horário específico'}
           </button>
           {spansMultipleDays && (
             <button
@@ -378,27 +382,19 @@ function ReminderForm({
       </fieldset>
       {occurrence === 'continuous' && (
         <div className="reminder-time-range">
-          <label className="field">
-            <span>Horário de início</span>
-            <input
-              type="time"
-              required
-              value={startTime}
-              onChange={(event) => setStartTime(event.target.value)}
-            />
-          </label>
-          <label className="field">
-            <span>Horário de término</span>
-            <input
-              type="time"
-              required
-              value={endTime}
-              onChange={(event) => setEndTime(event.target.value)}
-            />
-          </label>
+          <TimePicker
+            label="Horário de início"
+            value={startTime}
+            onChange={setStartTime}
+          />
+          <TimePicker
+            label="Horário de término"
+            value={endTime}
+            onChange={setEndTime}
+          />
         </div>
       )}
-      {occurrence === 'daily-times' && (
+      {occurrence === 'daily-times' && spansMultipleDays && (
         <fieldset className="repeat-times-field">
           <legend>Horários programados</legend>
           <p className="muted">
@@ -407,17 +403,23 @@ function ReminderForm({
           <div className="repeat-times-list">
             {repeatTimes.map((time, index) => (
               <div className="repeat-time" key={`${time}-${index}`}>
-                <input
-                  type="time"
+                <TimePicker
+                  label={`Horário ${index + 1}`}
                   value={time}
-                  aria-label={`Horário ${index + 1}`}
-                  onChange={(event) =>
+                  onChange={(nextTime) => {
+                    if (
+                      repeatTimes.some(
+                        (current, currentIndex) =>
+                          currentIndex !== index && current === nextTime,
+                      )
+                    )
+                      return
                     setRepeatTimes((times) =>
                       times.map((current, currentIndex) =>
-                        currentIndex === index ? event.target.value : current,
+                        currentIndex === index ? nextTime : current,
                       ),
                     )
-                  }
+                  }}
                 />
                 <button
                   type="button"
@@ -434,11 +436,10 @@ function ReminderForm({
             ))}
           </div>
           <div className="add-repeat-time">
-            <input
-              type="time"
+            <TimePicker
+              label="Novo horário"
               value={timeToAdd}
-              aria-label="Novo horário"
-              onChange={(event) => setTimeToAdd(event.target.value)}
+              onChange={setTimeToAdd}
             />
             <button
               type="button"
@@ -886,7 +887,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.5.0</span>
+              <span className="muted">Tomohu · v0.5.1</span>
             </div>
           )}
           {editor.kind === 'section' && (

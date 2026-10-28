@@ -825,19 +825,8 @@ legend {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
 }
-.repeat-time input,
-.add-repeat-time input {
-  width: 100%;
-  min-width: 0;
-  border: 1px solid #8198bd38;
-  border-radius: 9px;
-  background: #18243d;
-  color: #ecedf3;
-  padding: 10px 12px;
-  font: inherit;
-}
-.repeat-time button,
-.add-repeat-time button {
+.repeat-time > button,
+.add-repeat-time > button {
   border: 1px solid #8198bd38;
   border-radius: 9px;
   background: #283855;
@@ -849,9 +838,84 @@ legend {
 .add-repeat-time {
   margin-top: 10px;
 }
-.add-repeat-time button {
+.add-repeat-time > button {
   border-color: #edcf9460;
   color: #f1d99d;
+}
+.time-picker {
+  position: relative;
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #c3cde0;
+  font-size: 12px;
+}
+.time-picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 43px;
+  border: 1px solid #8198bd50;
+  border-radius: 10px;
+  background: #18243d;
+  color: #f0dca9;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.time-picker-trigger span {
+  color: #aebdd5;
+  font-size: 17px;
+}
+.time-picker-panel {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 7px);
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 8px;
+  width: max-content;
+  min-width: 236px;
+  border: 1px solid #8198bd66;
+  border-radius: 12px;
+  background: #22314e;
+  box-shadow: 0 14px 32px #08102199;
+  padding: 12px;
+}
+.time-picker-panel label {
+  display: grid;
+  gap: 6px;
+  color: #b8c6dd;
+  font-size: 10px;
+}
+.time-picker-panel input {
+  width: 62px;
+  border: 1px solid #8198bd55;
+  border-radius: 8px;
+  background: #17233a;
+  color: #f0dca9;
+  padding: 9px;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.time-picker-separator {
+  padding-bottom: 8px;
+  color: #e4c77f;
+  font-size: 19px;
+}
+.time-picker-panel > button {
+  grid-column: 1 / -1;
+  border: 1px solid #edcf9460;
+  border-radius: 8px;
+  background: #edcf9420;
+  color: #f1d99d;
+  padding: 8px;
+  font-size: 11px;
+  font-weight: 700;
 }
 .range-warning {
   margin: -5px 0 0;

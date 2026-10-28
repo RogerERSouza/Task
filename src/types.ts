@@ -42,6 +42,7 @@ export interface Reminder {
   endDate?: string
   endTime?: string
   repeatTimes?: string[]
+  duration?: 'single-day' | 'multi-day'
   countdownFormat?:
     'automatic' | 'days-hours' | 'hours-minutes' | 'minutes-seconds'
 }

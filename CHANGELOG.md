@@ -1,5 +1,15 @@
 # Histórico de versões
 
+## 0.5.1 — 2026-10-28
+
+### Corrigido
+
+- Texto das escolhas de data e horário ficou mais claro no formulário de lembretes.
+- Edição preserva corretamente a escolha de evento de vários dias.
+- Alterar a data de início também redefine a data de término para o mesmo dia.
+- Horários programados não aceitam duplicatas.
+- Seletores de horário agora usam painel próprio no visual do Tomohu, sem o menu nativo do navegador.
+
 ## 0.5.0 — 2026-10-28
 
 ### Alterado
