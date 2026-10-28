@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.5.4 — 2026-10-28
+
+### Adicionado
+
+- Ao abrir um lembrete encerrado, uma decisão própria permite excluí-lo ou seguir para alterar sua data.
+- Formulários de seção, conteúdo e lembrete agora explicam em vermelho quando falta um título para salvar.
+
 ## 0.5.3 — 2026-10-28
 
 ### Corrigido

@@ -934,11 +934,35 @@ legend {
   font-size: 12px;
   line-height: 1.45;
 }
+.form-warning {
+  display: block;
+  margin-top: 2px;
+  color: #f0b0a8 !important;
+  font-size: 11px !important;
+  line-height: 1.4;
+}
 .schedule-hint {
   margin: 8px 0 0;
   color: #f0a8a2;
   font-size: 11px;
   line-height: 1.4;
+}
+.expired-reminder-panel {
+  display: grid;
+  gap: 18px;
+  color: #d4ddef;
+  line-height: 1.55;
+}
+.expired-reminder-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.expired-reminder-actions .text-button {
+  justify-content: center;
+  min-height: 42px;
+  border: 1px solid #d98f8980;
+  border-radius: 10px;
 }
 .editor-panel {
   padding: 28px;

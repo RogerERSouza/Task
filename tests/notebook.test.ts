@@ -11,6 +11,7 @@ import {
   formatReminderDate,
   getReminderNextOccurrence,
   getReminderPriority,
+  isReminderExpired,
 } from '../src/lib/reminders.ts'
 
 test('counter history includes increases and corrections', () => {
@@ -218,4 +219,17 @@ test('scheduled daily times find the next occurrence inside the selected period'
   assert.equal(next?.getDate(), 3)
   assert.equal(formatReminderCountdown(medicine, now), 'Faltam 10h 00min')
   assert.match(formatReminderDate(medicine), /08:00, 20:00/)
+})
+
+test('expired reminders are separated from reminders still in progress', () => {
+  const reminder = {
+    id: 'exam',
+    title: 'Prova',
+    date: '2026-11-02',
+    schedule: 'time-range' as const,
+    startTime: '09:00',
+    endTime: '10:00',
+  }
+  assert.equal(isReminderExpired(reminder, new Date(2026, 10, 2, 9, 30)), false)
+  assert.equal(isReminderExpired(reminder, new Date(2026, 10, 2, 10, 0)), true)
 })

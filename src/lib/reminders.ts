@@ -144,6 +144,18 @@ export function formatReminderCountdown(
   return `Faltam ${String(minutes).padStart(2, '0')}min ${String(seconds).padStart(2, '0')}s`
 }
 
+export function isReminderExpired(
+  reminder: Reminder,
+  now = new Date(),
+): boolean {
+  const nextOccurrence = reminder.repeatTimes?.length
+    ? getReminderNextOccurrence(reminder, now)
+    : getReminderStart(reminder)
+  if (nextOccurrence && nextOccurrence > now) return false
+  const end = getReminderEnd(reminder)
+  return !end || now >= end
+}
+
 export function getReminderPriority(
   reminder: Reminder,
   now = new Date(),

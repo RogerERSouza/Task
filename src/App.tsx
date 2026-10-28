@@ -20,6 +20,7 @@ import {
   formatReminderDate,
   getDateInputValue,
   getReminderDate,
+  isReminderExpired,
   getReminderPriority,
 } from './lib/reminders'
 import type { ReminderDraft } from './lib/reminders'
@@ -31,6 +32,7 @@ type Editor =
   | { kind: 'content' }
   | { kind: 'settings' }
   | { kind: 'reminder'; reminder?: Reminder }
+  | { kind: 'expired-reminder'; reminder: Reminder }
   | null
 
 function subscribeToHash(onChange: () => void) {
@@ -60,15 +62,18 @@ function SectionForm({
   onSave: (values: Pick<Section, 'title' | 'emoji' | 'color'>) => void
 }) {
   const [title, setTitle] = useState(section?.title ?? '')
+  const [hasTriedToSave, setHasTriedToSave] = useState(false)
   const [emoji, setEmoji] = useState(section?.emoji ?? '📁')
   const [color, setColor] = useState(section?.color ?? SECTION_COLORS[0])
   return (
     <form
       className="modal-form"
+      noValidate
       onSubmit={(event) => {
         event.preventDefault()
-        if (title.trim())
-          onSave({ title: title.trim(), emoji: emoji.trim(), color })
+        setHasTriedToSave(true)
+        if (!title.trim()) return
+        onSave({ title: title.trim(), emoji: emoji.trim(), color })
       }}
     >
       <label className="field">
@@ -80,6 +85,11 @@ function SectionForm({
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
+        {hasTriedToSave && !title.trim() && (
+          <small className="form-warning" role="alert">
+            Não é possível salvar a seção. Escreva o nome da seção.
+          </small>
+        )}
       </label>
       <label className="field">
         <span>
@@ -131,7 +141,7 @@ function SectionForm({
           Cor atual: {color.toUpperCase()}
         </span>
       </fieldset>
-      <button className="primary-button" type="submit" disabled={!title.trim()}>
+      <button className="primary-button" type="submit">
         {section ? 'Salvar alterações' : 'Criar seção'}
       </button>
     </form>
@@ -144,13 +154,17 @@ function ContentForm({
   onSave: (kind: ContentKind, title: string) => void
 }) {
   const [title, setTitle] = useState('')
+  const [hasTriedToSave, setHasTriedToSave] = useState(false)
   const [kind, setKind] = useState<ContentKind>('note')
   return (
     <form
       className="modal-form"
+      noValidate
       onSubmit={(event) => {
         event.preventDefault()
-        if (title.trim()) onSave(kind, title.trim())
+        setHasTriedToSave(true)
+        if (!title.trim()) return
+        onSave(kind, title.trim())
       }}
     >
       <label className="field">
@@ -162,6 +176,11 @@ function ContentForm({
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
+        {hasTriedToSave && !title.trim() && (
+          <small className="form-warning" role="alert">
+            Não é possível criar o conteúdo. Escreva o título.
+          </small>
+        )}
       </label>
       <fieldset className="type-field">
         <legend>Tipo de conteúdo</legend>
@@ -186,7 +205,7 @@ function ContentForm({
           ))}
         </div>
       </fieldset>
-      <button className="primary-button" type="submit" disabled={!title.trim()}>
+      <button className="primary-button" type="submit">
         Criar e abrir
       </button>
     </form>
@@ -209,6 +228,7 @@ function ReminderForm({
 }) {
   const initialDate = reminder ? getReminderDate(reminder) : getDateInputValue()
   const [title, setTitle] = useState(reminder?.title ?? '')
+  const [hasTriedToSave, setHasTriedToSave] = useState(false)
   const [date, setDate] = useState(initialDate)
   const [spansMultipleDays, setSpansMultipleDays] = useState(
     reminder?.duration === 'multi-day' ||
@@ -254,6 +274,7 @@ function ReminderForm({
   }
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
+    setHasTriedToSave(true)
     if (
       title.trim() &&
       date &&
@@ -275,7 +296,7 @@ function ReminderForm({
       })
   }
   return (
-    <form className="modal-form" onSubmit={handleSubmit}>
+    <form className="modal-form" noValidate onSubmit={handleSubmit}>
       <label className="field">
         <span>Lembrete</span>
         <input
@@ -285,6 +306,11 @@ function ReminderForm({
           onChange={(event) => setTitle(event.target.value)}
           placeholder="O que você quer lembrar?"
         />
+        {hasTriedToSave && !title.trim() && (
+          <small className="form-warning" role="alert">
+            Não é possível salvar o lembrete. Escreva o título do evento.
+          </small>
+        )}
       </label>
       {reminder && (
         <button type="button" className="text-button danger" onClick={onRemove}>
@@ -501,17 +527,7 @@ function ReminderForm({
       <p className="muted">
         O contador escolhe automaticamente a melhor unidade de tempo.
       </p>
-      <button
-        className="primary-button"
-        type="submit"
-        disabled={
-          !title.trim() ||
-          !date ||
-          invalidDateRange ||
-          invalidTimeRange ||
-          invalidRepeatTimes
-        }
-      >
+      <button className="primary-button" type="submit">
         Salvar lembrete
       </button>
     </form>
@@ -722,9 +738,13 @@ function App() {
                       <button
                         key={reminder.id}
                         className="reminder-paper"
-                        onClick={() =>
-                          setEditor({ kind: 'reminder', reminder })
-                        }
+                        onClick={() => {
+                          setEditor(
+                            isReminderExpired(reminder, now)
+                              ? { kind: 'expired-reminder', reminder }
+                              : { kind: 'reminder', reminder },
+                          )
+                        }}
                       >
                         <span className="paper-tape" />
                         <span className="reminder-date">
@@ -899,9 +919,11 @@ function App() {
                 ? 'Novo conteúdo'
                 : editor.kind === 'settings'
                   ? 'Ajustes'
-                  : editor.reminder
-                    ? 'Editar lembrete'
-                    : 'Novo lembrete'
+                  : editor.kind === 'expired-reminder'
+                    ? 'Prazo encerrado'
+                    : editor.reminder
+                      ? 'Editar lembrete'
+                      : 'Novo lembrete'
           }
           onClose={() => setEditor(null)}
         >
@@ -912,7 +934,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.5.2</span>
+              <span className="muted">Tomohu · v0.5.4</span>
             </div>
           )}
           {editor.kind === 'section' && (
@@ -981,6 +1003,40 @@ function App() {
                 setEditor(null)
               }}
             />
+          )}
+          {editor.kind === 'expired-reminder' && (
+            <div className="expired-reminder-panel">
+              <p>
+                O prazo deste evento terminou. Deseja excluir ou alterar a data?
+              </p>
+              <div className="expired-reminder-actions">
+                <button
+                  type="button"
+                  className="text-button danger"
+                  onClick={() => {
+                    const id = editor.reminder.id
+                    setNotebook((current) => ({
+                      ...current,
+                      reminders: current.reminders.filter(
+                        (reminder) => reminder.id !== id,
+                      ),
+                    }))
+                    setEditor(null)
+                  }}
+                >
+                  Excluir lembrete
+                </button>
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={() =>
+                    setEditor({ kind: 'reminder', reminder: editor.reminder })
+                  }
+                >
+                  Alterar data
+                </button>
+              </div>
+            </div>
           )}
         </Modal>
       )}
