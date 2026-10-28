@@ -85,7 +85,17 @@ export function isNotebook(value: unknown): value is Notebook {
         isRecord(reminder) &&
         isText(reminder.id) &&
         isText(reminder.title) &&
-        isText(reminder.date),
+        isText(reminder.date) &&
+        (reminder.schedule === undefined ||
+          reminder.schedule === 'all-day' ||
+          reminder.schedule === 'time-range') &&
+        (reminder.startTime === undefined || isText(reminder.startTime)) &&
+        (reminder.endTime === undefined || isText(reminder.endTime)) &&
+        (reminder.countdownFormat === undefined ||
+          reminder.countdownFormat === 'automatic' ||
+          reminder.countdownFormat === 'days-hours' ||
+          reminder.countdownFormat === 'hours-minutes' ||
+          reminder.countdownFormat === 'minutes-seconds'),
     ) &&
     Array.isArray(data.contents) &&
     data.contents.every((content) => {

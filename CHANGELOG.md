@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.3.0 — 2026-10-28
+
+### Alterado
+
+- Lembretes agora usam calendário próprio, centralizado e integrado ao visual do Tomohu.
+- Eventos podem ser marcados como dia todo ou configurados com horário de início e fim.
+- Cartões de lembrete mostram um contador até o evento, com formato automático ou escolhido pelo usuário.
+- Dados de lembretes antigos continuam funcionando após a atualização.
+
 ## 0.2.0 — 2026-10-27
 
 ### Alterado

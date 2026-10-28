@@ -1,4 +1,4 @@
-# Tomohu · v0.2.0
+# Tomohu · v0.3.0
 
 Organizador pessoal em React e TypeScript. Primeira versão funcional, com armazenamento local e visual baseado no protótipo azul-escuro do Figma.
 
@@ -23,7 +23,7 @@ Abra o endereço informado pelo Vite, normalmente http://localhost:5173/.
 4. Abra uma lista para marcar, adicionar, editar, excluir e reordenar itens.
 5. Abra uma nota ou tutorial para escrever. Tutoriais aceitam texto livre e passos.
 6. Use + e − no contador. Na página própria, veja data/hora e adicione uma anotação a cada registro, inclusive correções com −.
-7. Crie um lembrete na página inicial; abra-o para editar ou concluir.
+7. Crie um lembrete na página inicial pelo calendário próprio; escolha dia todo ou uma faixa de horário e acompanhe o contador.
 8. Atualize a página: as alterações são mantidas no mesmo navegador e endereço.
 9. Abra Ajustes na barra inferior para exportar uma cópia JSON dos dados.
 
@@ -63,13 +63,13 @@ As regras obrigatórias para alterações ficam em [AGENTS.md](AGENTS.md).
 - Use uma aba por vez: ainda não há sincronização de alterações entre abas ou dispositivos.
 - Não há login, banco remoto, compartilhamento ou recuperação na nuvem.
 - O aplicativo ainda não é uma PWA: não garante abrir sem internet depois que o servidor for encerrado. Persistência local não equivale a um aplicativo offline completo.
-- Lembretes têm data e horário locais; recorrência e notificações ficam para outra etapa.
+- Lembretes têm data local, opção de dia todo ou faixa de horário e contador até o evento. Recorrência e notificações ficam para outra etapa.
 - Ainda não há exclusão/lixeira de seções e conteúdos, movimentação entre seções nem reordenação de cartões. Itens de listas podem ser excluídos e reordenados.
 - O contador impede números negativos. Correções são registradas com −; entradas do histórico não são apagadas.
 - O exemplo de violetas é um roteiro de organização/pesquisa, não uma orientação de cultivo verificada.
 
 ## Versões e Git
 
-`0.2.0` identifica esta entrega no pacote e no changelog. O repositório é publicado pelo GitHub Pages após cada push na `main`.
+`0.3.0` identifica esta entrega no pacote e no changelog. O repositório é publicado pelo GitHub Pages após cada push na `main`.
 
 Commits futuros: `feat: add ...`, `fix: correct ...`, `refactor: extract ...`. Uma versão pode reunir vários commits.

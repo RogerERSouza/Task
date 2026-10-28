@@ -4,11 +4,11 @@ Este arquivo é o organizador geral do projeto. Antes de começar uma funcionali
 
 ## Como organizamos as entregas
 
-| Tipo | Quando usar | Exemplo |
-| --- | --- | --- |
+| Tipo                     | Quando usar                                                         | Exemplo                                              |
+| ------------------------ | ------------------------------------------------------------------- | ---------------------------------------------------- |
 | **Mini patch** (`x.y.1`) | Correção ou pequeno ajuste visual, sem mudar uma função importante. | Trocar o seletor de ordenação por um único dropdown. |
-| **Update** (`x.y.0`) | Uma função nova ou evolução relevante de algo existente. | Melhorar lembretes com calendário e horários. |
-| **Marco** (`x.0.0`) | Base madura do app ou uma mudança grande de arquitetura. | Dados em nuvem, contas de usuário e versão estável. |
+| **Update** (`x.y.0`)     | Uma função nova ou evolução relevante de algo existente.            | Melhorar lembretes com calendário e horários.        |
+| **Marco** (`x.0.0`)      | Base madura do app ou uma mudança grande de arquitetura.            | Dados em nuvem, contas de usuário e versão estável.  |
 
 Uma entrega pode ter vários commits. A versão só sobe quando a função estiver testada e pronta para uso.
 
@@ -16,11 +16,11 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ### `0.3.0` · Lembretes e eventos
 
-- [ ] Calendário próprio, centralizado e no estilo do Tomohu.
-- [ ] Separar claramente o botão **Hoje** da ação de salvar o lembrete.
-- [ ] Evento de dia inteiro ou evento com intervalo de início e fim.
-- [ ] Contador até o evento, com formatos adequados ao tempo restante.
-- [ ] Base preparada para notificações futuras.
+- [x] Calendário próprio, centralizado e no estilo do Tomohu. — `0.3.0`
+- [x] Separar claramente o botão **Hoje** da ação de salvar o lembrete. — `0.3.0`
+- [x] Evento de dia inteiro ou evento com intervalo de início e fim. — `0.3.0`
+- [x] Contador até o evento, com formatos adequados ao tempo restante. — `0.3.0`
+- [x] Base preparada para notificações futuras. — `0.3.0`
 
 ## Mini patches planejados
 

@@ -162,6 +162,13 @@ h2 {
   font-weight: 400;
   overflow-wrap: anywhere;
 }
+.reminder-countdown {
+  display: block;
+  margin-top: 13px;
+  color: #675c4f;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
 .section-count {
   background: #2c3a56;
   border-radius: 6px;
@@ -557,6 +564,7 @@ textarea::placeholder {
 }
 .field input,
 .field textarea,
+.field select,
 .add-item input {
   width: 100%;
   border: 1px solid #8198bd38;
@@ -564,6 +572,9 @@ textarea::placeholder {
   color: #ecedf3;
   padding: 12px;
   min-width: 0;
+}
+.field select {
+  appearance: auto;
 }
 .field textarea {
   min-height: 130px;
@@ -690,6 +701,103 @@ legend {
   border-color: #edcf94;
   color: #edcf94;
   background: #edcf9408;
+}
+.calendar-picker {
+  border: 1px solid #8198bd38;
+  border-radius: 14px;
+  padding: 14px;
+  background: #18243d;
+}
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #e5eaf5;
+  text-transform: capitalize;
+  font-size: 13px;
+}
+.calendar-nav {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border: 1px solid #8198bd38;
+  border-radius: 8px;
+  background: #253451;
+  color: #e8d6a5;
+  font-size: 23px;
+  line-height: 1;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  text-align: center;
+}
+.calendar-weekday {
+  padding: 4px 0 7px;
+  color: #91a2c1;
+  font-size: 9px;
+  font-weight: 600;
+}
+.calendar-empty,
+.calendar-day {
+  min-height: 34px;
+}
+.calendar-day {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #c9d3e6;
+  font-size: 11px;
+}
+.calendar-day:hover {
+  background: #ffffff0b;
+}
+.calendar-day.today {
+  border-color: #8da6d680;
+  color: #d4e0f8;
+}
+.calendar-day.selected {
+  border-color: #edcf94;
+  background: #edcf94;
+  color: #17213a;
+  font-weight: 700;
+}
+.calendar-today {
+  display: block;
+  margin: 10px auto 0;
+  border: none;
+  background: transparent;
+  color: #edcf94;
+  font-size: 11px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.reminder-schedule-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.reminder-schedule-option {
+  min-height: 43px;
+  border: 1px solid #8198bd38;
+  border-radius: 10px;
+  background: #18243d;
+  color: #b9c7df;
+  font-size: 11px;
+}
+.reminder-schedule-option.selected {
+  border-color: #edcf94;
+  background: #edcf9412;
+  color: #f1d99d;
+}
+.reminder-time-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 .editor-panel {
   padding: 28px;

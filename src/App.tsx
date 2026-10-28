@@ -1,5 +1,6 @@
-import { useState, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import type { FormEvent } from 'react'
+import { CalendarPicker } from './components/CalendarPicker'
 import { ContentCard } from './components/ContentCard'
 import { ContentEditor } from './components/ContentEditor'
 import { Icon } from './components/Icon'
@@ -13,6 +14,14 @@ import {
   getSectionPath,
   SECTION_COLORS,
 } from './lib/notebook'
+import {
+  formatReminderCountdown,
+  formatReminderDate,
+  getDateInputValue,
+  getReminderDate,
+  getReminderStart,
+} from './lib/reminders'
+import type { ReminderDraft } from './lib/reminders'
 import type { Content, ContentKind, Reminder, Section } from './types'
 import './App.css'
 
@@ -183,20 +192,47 @@ function ContentForm({
   )
 }
 
+function getTimeOneHourLater(time: string): string {
+  const [hour, minute] = time.split(':').map(Number)
+  return `${String((hour + 1) % 24).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+}
+
 function ReminderForm({
   reminder,
   onSave,
   onRemove,
 }: {
   reminder?: Reminder
-  onSave: (title: string, date: string) => void
+  onSave: (values: ReminderDraft) => void
   onRemove: () => void
 }) {
   const [title, setTitle] = useState(reminder?.title ?? '')
-  const [date, setDate] = useState(reminder?.date ?? '')
+  const [date, setDate] = useState(() =>
+    reminder ? getReminderDate(reminder) : getDateInputValue(),
+  )
+  const [schedule, setSchedule] = useState<'all-day' | 'time-range'>(
+    reminder?.schedule ?? (reminder ? 'time-range' : 'all-day'),
+  )
+  const legacyTime = reminder?.date.slice(11, 16)
+  const [startTime, setStartTime] = useState(
+    reminder?.startTime ?? legacyTime ?? '09:00',
+  )
+  const [endTime, setEndTime] = useState(
+    reminder?.endTime ?? getTimeOneHourLater(legacyTime ?? '09:00'),
+  )
+  const [countdownFormat, setCountdownFormat] = useState<
+    NonNullable<Reminder['countdownFormat']>
+  >(reminder?.countdownFormat ?? 'automatic')
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    if (title.trim() && date) onSave(title.trim(), date)
+    if (title.trim() && date && (schedule === 'all-day' || endTime))
+      onSave({
+        title: title.trim(),
+        date,
+        schedule,
+        ...(schedule === 'time-range' ? { startTime, endTime } : {}),
+        countdownFormat,
+      })
   }
   return (
     <form className="modal-form" onSubmit={handleSubmit}>
@@ -210,22 +246,83 @@ function ReminderForm({
           placeholder="O que você quer lembrar?"
         />
       </label>
+      <CalendarPicker value={date} onChange={setDate} />
+      <fieldset className="reminder-schedule-field">
+        <legend>Quando acontece?</legend>
+        <div className="reminder-schedule-options" role="group">
+          <button
+            type="button"
+            className={
+              schedule === 'all-day'
+                ? 'reminder-schedule-option selected'
+                : 'reminder-schedule-option'
+            }
+            aria-pressed={schedule === 'all-day'}
+            onClick={() => setSchedule('all-day')}
+          >
+            Dia todo
+          </button>
+          <button
+            type="button"
+            className={
+              schedule === 'time-range'
+                ? 'reminder-schedule-option selected'
+                : 'reminder-schedule-option'
+            }
+            aria-pressed={schedule === 'time-range'}
+            onClick={() => setSchedule('time-range')}
+          >
+            Com horário
+          </button>
+        </div>
+      </fieldset>
+      {schedule === 'time-range' && (
+        <div className="reminder-time-range">
+          <label className="field">
+            <span>Começa</span>
+            <input
+              type="time"
+              required
+              value={startTime}
+              onChange={(event) => setStartTime(event.target.value)}
+            />
+          </label>
+          <label className="field">
+            <span>Termina</span>
+            <input
+              type="time"
+              required
+              value={endTime}
+              onChange={(event) => setEndTime(event.target.value)}
+            />
+          </label>
+        </div>
+      )}
       <label className="field">
-        <span>Data e horário</span>
-        <input
-          type="datetime-local"
-          required
-          value={date}
-          onChange={(event) => setDate(event.target.value)}
-        />
+        <span>Contador até o evento</span>
+        <select
+          value={countdownFormat}
+          onChange={(event) =>
+            setCountdownFormat(
+              event.target.value as NonNullable<Reminder['countdownFormat']>,
+            )
+          }
+        >
+          <option value="automatic">Automático</option>
+          <option value="days-hours">Dias e horas</option>
+          <option value="hours-minutes">Horas e minutos</option>
+          <option value="minutes-seconds">Minutos e segundos</option>
+        </select>
       </label>
       <p className="muted">
-        Aparece no início. Não envia notificações nesta versão.
+        Aparece no início. As notificações serão adicionadas em outra update.
       </p>
       <button
         className="primary-button"
         type="submit"
-        disabled={!title.trim() || !date}
+        disabled={
+          !title.trim() || !date || (schedule === 'time-range' && !endTime)
+        }
       >
         Salvar lembrete
       </button>
@@ -257,6 +354,11 @@ function App() {
   const [query, setQuery] = useState('')
   const [sortOrder, setSortOrder] = useState('manual')
   const [editor, setEditor] = useState<Editor>(null)
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 1000)
+    return () => window.clearInterval(timer)
+  }, [])
   const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
   const parentId = currentSection?.id ?? null
   const visibleSections = notebook.sections.filter(
@@ -273,8 +375,10 @@ function App() {
       content.sectionId === currentSection?.id &&
       content.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery),
   )
-  const reminders = [...notebook.reminders].sort((first, second) =>
-    first.date.localeCompare(second.date),
+  const reminders = [...notebook.reminders].sort(
+    (first, second) =>
+      (getReminderStart(first)?.getTime() ?? Number.POSITIVE_INFINITY) -
+      (getReminderStart(second)?.getTime() ?? Number.POSITIVE_INFINITY),
   )
 
   function openSection(id?: string) {
@@ -442,14 +546,12 @@ function App() {
                       >
                         <span className="paper-tape" />
                         <span className="reminder-date">
-                          {new Date(reminder.date).toLocaleString('pt-BR', {
-                            day: '2-digit',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
+                          {formatReminderDate(reminder)}
                         </span>
                         <strong>{reminder.title}</strong>
+                        <span className="reminder-countdown">
+                          {formatReminderCountdown(reminder, now)}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -628,7 +730,7 @@ function App() {
                 Exportar cópia dos dados
               </button>
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.2.0</span>
+              <span className="muted">Tomohu · v0.3.0</span>
             </div>
           )}
           {editor.kind === 'section' && (
@@ -669,19 +771,19 @@ function App() {
           {editor.kind === 'reminder' && (
             <ReminderForm
               reminder={editor.reminder}
-              onSave={(title, date) => {
+              onSave={(values) => {
                 const existing = editor.reminder
                 setNotebook((current) => ({
                   ...current,
                   reminders: existing
                     ? current.reminders.map((reminder) =>
                         reminder.id === existing.id
-                          ? { ...reminder, title, date }
+                          ? { id: reminder.id, ...values }
                           : reminder,
                       )
                     : [
                         ...current.reminders,
-                        { id: crypto.randomUUID(), title, date },
+                        { id: crypto.randomUUID(), ...values },
                       ],
                 }))
                 setEditor(null)

@@ -6,6 +6,10 @@ import {
   getSectionPath,
   isNotebook,
 } from '../src/lib/notebook.ts'
+import {
+  formatReminderCountdown,
+  formatReminderDate,
+} from '../src/lib/reminders.ts'
 
 test('counter history includes increases and corrections', () => {
   assert.equal(
@@ -77,4 +81,78 @@ test('saved data validation rejects malformed content and unsupported versions',
     false,
   )
   assert.equal(isNotebook(null), false)
+})
+
+test('saved data keeps legacy reminders and accepts scheduled reminders', () => {
+  const base = {
+    schemaVersion: 1,
+    sections: [],
+    contents: [],
+  }
+  assert.equal(
+    isNotebook({
+      ...base,
+      reminders: [{ id: 'legacy', title: 'Antigo', date: '2026-11-02T09:00' }],
+    }),
+    true,
+  )
+  assert.equal(
+    isNotebook({
+      ...base,
+      reminders: [
+        {
+          id: 'new',
+          title: 'Novo',
+          date: '2026-11-02',
+          schedule: 'time-range',
+          startTime: '09:00',
+          endTime: '10:00',
+          countdownFormat: 'days-hours',
+        },
+      ],
+    }),
+    true,
+  )
+  assert.equal(
+    isNotebook({
+      ...base,
+      reminders: [
+        { id: 'invalid', title: 'Erro', date: '2026-11-02', schedule: 'soon' },
+      ],
+    }),
+    false,
+  )
+})
+
+test('reminder dates and countdowns use the selected schedule', () => {
+  const reminder = {
+    id: 'new',
+    title: 'Prova',
+    date: '2026-11-02',
+    schedule: 'time-range' as const,
+    startTime: '09:00',
+    endTime: '10:00',
+    countdownFormat: 'hours-minutes' as const,
+  }
+  assert.match(formatReminderDate(reminder), /02 de nov\./)
+  assert.equal(
+    formatReminderCountdown(reminder, new Date(2026, 10, 2, 7, 30)),
+    'Faltam 1h 30min',
+  )
+  assert.equal(
+    formatReminderCountdown(reminder, new Date(2026, 10, 2, 9, 30)),
+    'Em andamento',
+  )
+  assert.equal(
+    formatReminderCountdown(
+      {
+        id: 'all-day',
+        title: 'Feriado',
+        date: '2026-11-02',
+        schedule: 'all-day',
+      },
+      new Date(2026, 10, 2, 15, 30),
+    ),
+    'Hoje',
+  )
 })
