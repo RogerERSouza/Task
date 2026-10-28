@@ -94,6 +94,10 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 Qualidade de vida do código vem antes de velocidade de entrega.
 
+## Experiência do usuário — regra permanente
+
+Toda função nova deve ser analisada pelo ponto de vista de quem está usando o Tomohu pela primeira vez. Se houver chance de dúvida, erro comum ou trabalho desnecessário, a própria interface deve prevenir ou explicar: escolhas com nomes claros, passos guiados, valores padrão seguros e avisos contextuais em vermelho quando uma ação não puder continuar. A meta não é apenas adicionar recursos, mas tornar cada recurso fácil de entender sem depender de manual.
+
 - Fazer **uma funcionalidade principal por update**; não juntar várias mudanças grandes na mesma entrega.
 - Antes de modificar, entender onde a função atual está ligada. Ao remover algo, remover também dependências e código morto.
 - Preservar dados existentes: mudanças no formato salvo precisam manter compatibilidade ou ter migração.

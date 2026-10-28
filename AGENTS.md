@@ -19,6 +19,7 @@ Estas regras devem ser seguidas antes, durante e depois de qualquer alteração 
 6. Manter código em inglês e seguir o padrão atual de nomes e componentes. Enquanto não houver seletor de idioma, os textos da interface ficam em português; quando houver, novos textos devem entrar na estrutura central de traduções, não espalhados pelos componentes.
 7. Não adicionar dependências externas se HTML, CSS, React ou uma função pequena já resolverem o problema.
 8. Para login, armazenamento remoto, senhas, criptografia ou notificações, planejar a arquitetura e segurança antes de escrever a implementação.
+9. Antes de finalizar qualquer fluxo, imaginar a primeira utilização: identificar decisões ambíguas, passos desnecessários, ações que parecem ter outro efeito e erros sem explicação. Resolver a dificuldade na interface com textos claros, escolhas guiadas, valores seguros e avisos contextuais — não esperar que a pessoa leia instruções externas.
 
 ## Revisão obrigatória antes de entregar
 
@@ -32,7 +33,7 @@ Estas regras devem ser seguidas antes, durante e depois de qualquer alteração 
    npm.cmd run build
    ```
 
-3. Testar no navegador os fluxos afetados: criar, editar, salvar, recarregar a página e excluir/concluir quando aplicável.
+3. Testar no navegador os fluxos afetados: criar, editar, salvar, recarregar a página e excluir/concluir quando aplicável. Em cada fluxo, confirmar que uma pessoa nova entende o próximo passo e recebe uma mensagem útil se tentar uma ação inválida.
 4. Verificar que a alteração não remove dados anteriores nem quebra a página inicial, sessões, conteúdos, lembretes ou Ajustes.
 5. Se algum teste falhar, corrigir a causa. Nunca entregar um patch com falhas conhecidas sem explicar e pedir decisão.
 6. Gerar o patch somente depois da validação e testar sua aplicação em uma cópia limpa do repositório.
