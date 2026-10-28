@@ -40,6 +40,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Regra visual e técnica para horários programados únicos. — `0.5.2`
 - [x] Alerta contextual de horário repetido e painéis sem rolagem lateral. — `0.5.3`
 - [x] Decisão para lembretes encerrados e avisos claros de validação. — `0.5.4`
+- [x] Lembrete pontual em dia específico, com um único horário. — `0.5.5`
 
 ## Mini patches planejados
 
@@ -65,6 +66,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Cores livres para seções e subseções. — `0.2.0`
 - [ ] Tema claro e escuro.
 - [ ] Seletor de idioma do app, começando por português e inglês, com textos centralizados para facilitar novos idiomas.
+- [ ] Escolha de formato de hora: 24 horas ou 12 horas (AM/PM), salva nas preferências do app.
 - [ ] Estilos de fonte predefinidos, como Padrão, Leitura e Nota, aplicados ao app inteiro e salvos na preferência do usuário.
 - [ ] Mais opções de personalização visual sem perder a identidade do Tomohu.
 

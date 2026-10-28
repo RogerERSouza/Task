@@ -1,4 +1,4 @@
-# Tomohu · v0.5.4
+# Tomohu · v0.5.5
 
 Organizador pessoal em React e TypeScript. Primeira versão funcional, com armazenamento local e visual baseado no protótipo azul-escuro do Figma.
 
@@ -70,6 +70,6 @@ As regras obrigatórias para alterações ficam em [AGENTS.md](AGENTS.md).
 
 ## Versões e Git
 
-`0.5.4` identifica esta entrega no pacote e no changelog. O repositório é publicado pelo GitHub Pages após cada push na `main`.
+`0.5.5` identifica esta entrega no pacote e no changelog. O repositório é publicado pelo GitHub Pages após cada push na `main`.
 
 Commits futuros: `feat: add ...`, `fix: correct ...`, `refactor: extract ...`. Uma versão pode reunir vários commits.

@@ -233,3 +233,18 @@ test('expired reminders are separated from reminders still in progress', () => {
   assert.equal(isReminderExpired(reminder, new Date(2026, 10, 2, 9, 30)), false)
   assert.equal(isReminderExpired(reminder, new Date(2026, 10, 2, 10, 0)), true)
 })
+
+test('a single-time reminder shows its one scheduled time', () => {
+  const reminder = {
+    id: 'class',
+    title: 'Aula',
+    date: '2026-11-02',
+    schedule: 'time-range' as const,
+    startTime: '14:30',
+  }
+  assert.match(formatReminderDate(reminder), /02 de nov\. · 14:30/)
+  assert.equal(
+    formatReminderCountdown(reminder, new Date(2026, 10, 2, 14, 0)),
+    'Faltam 30min 00s',
+  )
+})

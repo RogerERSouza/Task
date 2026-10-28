@@ -236,15 +236,17 @@ function ReminderForm({
   )
   const [endDate, setEndDate] = useState(reminder?.endDate ?? initialDate)
   const [occurrence, setOccurrence] = useState<
-    'all-day' | 'continuous' | 'daily-times'
+    'all-day' | 'single-time' | 'continuous' | 'daily-times'
   >(
     reminder?.schedule === 'all-day'
       ? 'all-day'
       : reminder?.repeatTimes?.length
         ? 'daily-times'
-        : reminder
+        : reminder?.endTime
           ? 'continuous'
-          : 'all-day',
+          : reminder
+            ? 'single-time'
+            : 'all-day',
   )
   const legacyTime = reminder?.date.slice(11, 16)
   const [startTime, setStartTime] = useState(
@@ -288,6 +290,7 @@ function ReminderForm({
         schedule: occurrence === 'all-day' ? 'all-day' : 'time-range',
         duration: spansMultipleDays ? 'multi-day' : 'single-day',
         ...(spansMultipleDays ? { endDate } : {}),
+        ...(occurrence === 'single-time' ? { startTime } : {}),
         ...(occurrence === 'continuous' ? { startTime, endTime } : {}),
         ...(occurrence === 'daily-times'
           ? { repeatTimes: [...repeatTimes].sort() }
@@ -344,7 +347,10 @@ function ReminderForm({
                 : 'reminder-schedule-option'
             }
             aria-pressed={spansMultipleDays}
-            onClick={() => setSpansMultipleDays(true)}
+            onClick={() => {
+              setSpansMultipleDays(true)
+              if (occurrence === 'single-time') setOccurrence('all-day')
+            }}
           >
             Vários dias
           </button>
@@ -368,14 +374,7 @@ function ReminderForm({
             ? 'Como acontece nesse período?'
             : 'Em que momento o evento ocorre?'}
         </legend>
-        <div
-          className={
-            spansMultipleDays
-              ? 'reminder-schedule-options three-options'
-              : 'reminder-schedule-options'
-          }
-          role="group"
-        >
+        <div className="reminder-schedule-options three-options" role="group">
           <button
             type="button"
             className={
@@ -398,8 +397,22 @@ function ReminderForm({
             aria-pressed={occurrence === 'continuous'}
             onClick={() => setOccurrence('continuous')}
           >
-            {spansMultipleDays ? 'Contínuo' : 'Horário específico'}
+            {spansMultipleDays ? 'Contínuo' : 'Com duração'}
           </button>
+          {!spansMultipleDays && (
+            <button
+              type="button"
+              className={
+                occurrence === 'single-time'
+                  ? 'reminder-schedule-option selected'
+                  : 'reminder-schedule-option'
+              }
+              aria-pressed={occurrence === 'single-time'}
+              onClick={() => setOccurrence('single-time')}
+            >
+              Um horário
+            </button>
+          )}
           {spansMultipleDays && (
             <button
               type="button"
@@ -435,6 +448,16 @@ function ReminderForm({
             onActiveChange={setActiveTimePickerId}
           />
         </div>
+      )}
+      {occurrence === 'single-time' && !spansMultipleDays && (
+        <TimePicker
+          id="single-time"
+          label="Horário do aviso"
+          value={startTime}
+          onChange={setStartTime}
+          activeId={activeTimePickerId}
+          onActiveChange={setActiveTimePickerId}
+        />
       )}
       {occurrence === 'daily-times' && spansMultipleDays && (
         <fieldset className="repeat-times-field">

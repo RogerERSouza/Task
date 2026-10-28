@@ -107,6 +107,8 @@ export function formatReminderDate(reminder: Reminder): string {
       return `${dateFormatter.format(start)} — ${dateFormatter.format(end ?? start)} · ${reminder.repeatTimes.join(', ')}`
     if (isMultiDay && end)
       return `${dateFormatter.format(start)} ${reminder.startTime ?? '--:--'} → ${dateFormatter.format(end)} ${reminder.endTime ?? '--:--'}`
+    if (reminder.startTime && !reminder.endTime)
+      return `${dateFormatter.format(start)} · ${reminder.startTime}`
     return `${dateFormatter.format(start)} · ${reminder.startTime ?? '--:--'}–${reminder.endTime ?? '--:--'}`
   }
   return new Intl.DateTimeFormat('pt-BR', {

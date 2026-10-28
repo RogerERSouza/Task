@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 0.5.5 — 2026-10-28
+
+### Adicionado
+
+- Eventos de dia específico agora podem usar “Um horário”: um aviso pontual com data e hora, sem exigir duração.
+
 ## 0.5.4 — 2026-10-28
 
 ### Adicionado
