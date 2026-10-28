@@ -54,6 +54,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Cores livres para seções e subseções. — `0.2.0`
 - [ ] Tema claro e escuro.
 - [ ] Seletor de idioma do app, começando por português e inglês, com textos centralizados para facilitar novos idiomas.
+- [ ] Estilos de fonte predefinidos, como Padrão, Leitura e Nota, aplicados ao app inteiro e salvos na preferência do usuário.
 - [ ] Mais opções de personalização visual sem perder a identidade do Tomohu.
 
 ### Dados, backup e dispositivos
