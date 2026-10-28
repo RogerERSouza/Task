@@ -50,6 +50,14 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ## Updates planejadas
 
+### Experiência visual e fluidez
+
+- [ ] Criar um sistema leve e consistente de animações para o Tomohu, sem aumentar o peso do app.
+- [ ] Animar a entrada e saída de menus, modais, calendários e seletores com transições curtas e suaves.
+- [ ] Dar retorno visual sutil ao tocar em cartões, botões e ações concluídas.
+- [ ] Aplicar animação de aparecimento aos menus de ações de lembretes, como alterar ou excluir, inspirada na sensação fluida de calendários modernos.
+- [ ] Respeitar a preferência do dispositivo por reduzir animações (`prefers-reduced-motion`).
+
 ### Organização e uso diário
 
 - [ ] Progresso visual em listas e coleções: quantidade e porcentagem concluída.
