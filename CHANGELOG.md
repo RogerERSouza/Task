@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 0.6.3 — 2026-10-28
+
+### Corrigido
+
+- O ícone de ordenação agora tem as duas setas separadas, deixando o sentido de organizar mais claro.
+
 ## 0.6.2 — 2026-10-28
 
 ### Alterado
