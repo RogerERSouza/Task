@@ -577,6 +577,9 @@ function App() {
   const path = getSectionPath(notebook.sections, currentSection?.id ?? null)
   const [query, setQuery] = useState('')
   const [sortOrder, setSortOrder] = useState('manual')
+  const [colorFilter, setColorFilter] = useState<string | null>(null)
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
+  const sortMenuRef = useRef<HTMLDivElement>(null)
   const [editor, setEditor] = useState<Editor>(null)
   const [importError, setImportError] = useState('')
   const importInputRef = useRef<HTMLInputElement>(null)
@@ -585,12 +588,37 @@ function App() {
     const timer = window.setInterval(() => setNow(new Date()), 1000)
     return () => window.clearInterval(timer)
   }, [])
+  useEffect(() => {
+    if (!isSortMenuOpen) return
+    const closeMenu = (event: PointerEvent) => {
+      if (!sortMenuRef.current?.contains(event.target as Node))
+        setIsSortMenuOpen(false)
+    }
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsSortMenuOpen(false)
+    }
+    window.addEventListener('pointerdown', closeMenu)
+    window.addEventListener('keydown', closeWithEscape)
+    return () => {
+      window.removeEventListener('pointerdown', closeMenu)
+      window.removeEventListener('keydown', closeWithEscape)
+    }
+  }, [isSortMenuOpen])
   const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
   const parentId = currentSection?.id ?? null
-  const visibleSections = notebook.sections.filter(
+  const sectionsInScope = notebook.sections.filter(
     (section) =>
       (isHome && normalizedQuery ? true : section.parentId === parentId) &&
       section.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery),
+  )
+  const usedColors = [
+    ...new Set(sectionsInScope.map((section) => section.color)),
+  ]
+  const visibleSections = notebook.sections.filter(
+    (section) =>
+      (isHome && normalizedQuery ? true : section.parentId === parentId) &&
+      section.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery) &&
+      (!colorFilter || section.color === colorFilter),
   )
   if (sortOrder === 'alphabetical')
     visibleSections.sort((first, second) =>
@@ -599,6 +627,7 @@ function App() {
   const visibleContents = notebook.contents.filter(
     (content) =>
       content.sectionId === currentSection?.id &&
+      !colorFilter &&
       content.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery),
   )
   const reminders = [...notebook.reminders].sort(
@@ -608,6 +637,8 @@ function App() {
 
   function openSection(id?: string) {
     setQuery('')
+    setColorFilter(null)
+    setIsSortMenuOpen(false)
     navigate(id ? 'section' : undefined, id)
   }
   function updateContent(updatedContent: Content) {
@@ -823,38 +854,93 @@ function App() {
                     onChange={(event) => setQuery(event.target.value)}
                   />
                 </label>
-                <div className="sort-control">
-                  <span className="sort-label">Ordenar</span>
-                  <div
-                    className="sort-options"
-                    role="group"
-                    aria-label="Ordenar seções"
+                <div className="sort-menu" ref={sortMenuRef}>
+                  <button
+                    type="button"
+                    className="sort-menu-trigger"
+                    aria-expanded={isSortMenuOpen}
+                    aria-haspopup="menu"
+                    onClick={() => setIsSortMenuOpen((isOpen) => !isOpen)}
                   >
-                    <button
-                      type="button"
-                      className={
-                        sortOrder === 'manual'
-                          ? 'sort-option active'
-                          : 'sort-option'
-                      }
-                      onClick={() => setSortOrder('manual')}
-                      aria-pressed={sortOrder === 'manual'}
-                    >
-                      Recentes
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        sortOrder === 'alphabetical'
-                          ? 'sort-option active'
-                          : 'sort-option'
-                      }
-                      onClick={() => setSortOrder('alphabetical')}
-                      aria-pressed={sortOrder === 'alphabetical'}
-                    >
-                      A–Z
-                    </button>
-                  </div>
+                    Ordenar{colorFilter ? ' e filtrar' : ''}
+                    <span aria-hidden="true">⌄</span>
+                  </button>
+                  {isSortMenuOpen && (
+                    <div className="sort-menu-panel" role="menu">
+                      <span className="sort-menu-label">Ordenar por</span>
+                      <button
+                        type="button"
+                        className={
+                          sortOrder === 'manual'
+                            ? 'sort-option active'
+                            : 'sort-option'
+                        }
+                        onClick={() => {
+                          setSortOrder('manual')
+                          setIsSortMenuOpen(false)
+                        }}
+                        aria-pressed={sortOrder === 'manual'}
+                      >
+                        Mais recentes
+                      </button>
+                      <button
+                        type="button"
+                        className={
+                          sortOrder === 'alphabetical'
+                            ? 'sort-option active'
+                            : 'sort-option'
+                        }
+                        onClick={() => {
+                          setSortOrder('alphabetical')
+                          setIsSortMenuOpen(false)
+                        }}
+                        aria-pressed={sortOrder === 'alphabetical'}
+                      >
+                        A–Z
+                      </button>
+                      {usedColors.length > 0 && (
+                        <>
+                          <span className="sort-menu-label">
+                            Filtrar por cor
+                          </span>
+                          <div className="sort-color-options" role="group">
+                            <button
+                              type="button"
+                              className={
+                                colorFilter
+                                  ? 'sort-color-clear'
+                                  : 'sort-color-clear active'
+                              }
+                              onClick={() => {
+                                setColorFilter(null)
+                                setIsSortMenuOpen(false)
+                              }}
+                            >
+                              Todas
+                            </button>
+                            {usedColors.map((color) => (
+                              <button
+                                key={color}
+                                type="button"
+                                className={
+                                  colorFilter === color
+                                    ? 'sort-color selected'
+                                    : 'sort-color'
+                                }
+                                style={{ backgroundColor: color }}
+                                aria-label={`Filtrar pela cor ${color}`}
+                                aria-pressed={colorFilter === color}
+                                onClick={() => {
+                                  setColorFilter(color)
+                                  setIsSortMenuOpen(false)
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <button
                   className="primary-button"

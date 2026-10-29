@@ -44,7 +44,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ## Mini patches planejados
 
-- [ ] Trocar os controles atuais de ordenação por um único botão dropdown.
+- [x] Trocar os controles atuais de ordenação por um único botão dropdown, com filtro pelas cores já usadas. — `0.6.1`
 - [ ] Melhorar fluidez ao entrar em sessões, abrir conteúdos e executar ações.
 - [ ] Pequenos ajustes de acessibilidade, textos, espaçamentos e responsividade que surgirem nos testes.
 
@@ -64,6 +64,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [ ] Favoritar/fixar seções importantes no topo.
 - [ ] Busca global por seções, conteúdos, notas, itens e lembretes.
 - [ ] Tags para organizar por assunto, como `escola`, `pessoal` e `trabalho`.
+- [ ] Filtros adicionais por tipo de conteúdo e estado de conclusão, quando esses dados fizerem sentido para a tela.
 - [ ] Arquivar sessões e conteúdos concluídos sem apagar.
 - [ ] Repetição de eventos: diária, semanal, mensal e personalizada.
 - [ ] Tipo de conteúdo de coleção/tracker, útil para coisas como times Pokémon.

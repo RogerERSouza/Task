@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.6.1 — 2026-10-28
+
+### Alterado
+
+- A ordenação agora usa um único menu de “Ordenar e filtrar”, mais claro e integrado ao visual do Tomohu.
+- Seções podem ser filtradas pelas cores que já existem na tela atual; ao trocar de seção, o filtro é limpo para não esconder conteúdo inesperadamente.
+- O menu aparece com uma animação leve e respeita a preferência do sistema por reduzir movimentos.
+
 ## 0.6.0 — 2026-10-28
 
 ### Adicionado
