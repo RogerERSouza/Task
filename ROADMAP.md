@@ -44,7 +44,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ## Mini patches planejados
 
-- [x] Trocar os controles atuais de ordenação por um único botão dropdown, com filtro pelas cores já usadas. — `0.6.1`
+- [x] Trocar os controles atuais de ordenação por um único botão dropdown, com filtro pelas cores já usadas e ordem por recentes, antigas ou A–Z. — `0.6.2`
 - [ ] Melhorar fluidez ao entrar em sessões, abrir conteúdos e executar ações.
 - [ ] Pequenos ajustes de acessibilidade, textos, espaçamentos e responsividade que surgirem nos testes.
 

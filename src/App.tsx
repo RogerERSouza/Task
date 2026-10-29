@@ -576,7 +576,7 @@ function App() {
   const isMissing = !isHome && !currentSection
   const path = getSectionPath(notebook.sections, currentSection?.id ?? null)
   const [query, setQuery] = useState('')
-  const [sortOrder, setSortOrder] = useState('manual')
+  const [sortOrder, setSortOrder] = useState('newest')
   const [colorFilter, setColorFilter] = useState<string | null>(null)
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
@@ -620,6 +620,7 @@ function App() {
       section.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery) &&
       (!colorFilter || section.color === colorFilter),
   )
+  if (sortOrder === 'newest') visibleSections.reverse()
   if (sortOrder === 'alphabetical')
     visibleSections.sort((first, second) =>
       first.title.localeCompare(second.title, 'pt-BR'),
@@ -863,7 +864,7 @@ function App() {
                     onClick={() => setIsSortMenuOpen((isOpen) => !isOpen)}
                   >
                     Ordenar{colorFilter ? ' e filtrar' : ''}
-                    <span aria-hidden="true">⌄</span>
+                    <Icon name="sort" />
                   </button>
                   {isSortMenuOpen && (
                     <div className="sort-menu-panel" role="menu">
@@ -871,17 +872,32 @@ function App() {
                       <button
                         type="button"
                         className={
-                          sortOrder === 'manual'
+                          sortOrder === 'newest'
                             ? 'sort-option active'
                             : 'sort-option'
                         }
                         onClick={() => {
-                          setSortOrder('manual')
+                          setSortOrder('newest')
                           setIsSortMenuOpen(false)
                         }}
-                        aria-pressed={sortOrder === 'manual'}
+                        aria-pressed={sortOrder === 'newest'}
                       >
                         Mais recentes
+                      </button>
+                      <button
+                        type="button"
+                        className={
+                          sortOrder === 'oldest'
+                            ? 'sort-option active'
+                            : 'sort-option'
+                        }
+                        onClick={() => {
+                          setSortOrder('oldest')
+                          setIsSortMenuOpen(false)
+                        }}
+                        aria-pressed={sortOrder === 'oldest'}
+                      >
+                        Mais antigas
                       </button>
                       <button
                         type="button"

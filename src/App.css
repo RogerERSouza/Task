@@ -253,14 +253,14 @@ textarea::placeholder {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 43px;
+  gap: 9px;
+  min-height: 46px;
   border: 1px solid #8198bd38;
   border-radius: 10px;
   background: #222f4c;
   color: #d7e0f0;
-  padding: 10px 12px;
-  font-size: 11px;
+  padding: 11px 13px;
+  font-size: 12px;
   font-weight: 650;
 }
 .sort-menu-trigger:hover,
@@ -268,9 +268,10 @@ textarea::placeholder {
   border-color: #edcf9460;
   color: #f1d99d;
 }
-.sort-menu-trigger span {
+.sort-menu-trigger svg {
   color: #aebdd5;
-  font-size: 16px;
+  width: 17px;
+  height: 17px;
 }
 .sort-menu-panel {
   position: absolute;
@@ -278,31 +279,31 @@ textarea::placeholder {
   top: calc(100% + 8px);
   right: 0;
   display: grid;
-  min-width: 204px;
-  gap: 4px;
+  min-width: 232px;
+  gap: 5px;
   border: 1px solid #8198bd55;
   border-radius: 12px;
   background: #22314e;
   box-shadow: 0 16px 34px #081021aa;
-  padding: 10px;
+  padding: 12px;
   transform-origin: top right;
   animation: sort-menu-in 150ms ease-out;
 }
 .sort-menu-label {
-  margin: 3px 4px 4px;
+  margin: 4px 5px 5px;
   color: #9eafca;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
 }
 .sort-option {
-  min-height: 34px;
+  min-height: 38px;
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  padding: 6px 9px;
+  padding: 7px 10px;
   text-align: left;
   color: #aebbd1;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
 }
 .sort-option:hover {
@@ -316,17 +317,17 @@ textarea::placeholder {
 .sort-color-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 8px;
   padding: 2px 0 2px 2px;
 }
 .sort-color-clear {
-  min-height: 28px;
+  min-height: 30px;
   border: 1px solid #8198bd42;
   border-radius: 7px;
   background: #18243d;
   color: #b8c6dd;
   padding: 4px 8px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
 }
 .sort-color-clear.active {
@@ -334,8 +335,8 @@ textarea::placeholder {
   color: #f1d99d;
 }
 .sort-color {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border: 2px solid #ffffff20;
   border-radius: 50%;
   background: var(--section-color);
@@ -633,7 +634,7 @@ textarea::placeholder {
 }
 .modal {
   color: #e9edf5;
-  width: min(460px, calc(100% - 32px));
+  width: min(500px, calc(100% - 32px));
   max-height: calc(100svh - 40px);
   padding: 24px;
   background: #202d47;
@@ -660,18 +661,18 @@ textarea::placeholder {
   margin-bottom: 24px;
 }
 .modal-header h2 {
-  font-size: 20px;
+  font-size: 21px;
 }
 .modal-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 .field {
   display: flex;
   flex-direction: column;
   gap: 9px;
-  font-size: 12px;
+  font-size: 13px;
   color: #c3cde0;
 }
 .field small {
@@ -686,7 +687,7 @@ textarea::placeholder {
   border: 1px solid #8198bd38;
   background: #18243d;
   color: #ecedf3;
-  padding: 12px;
+  padding: 13px;
   min-width: 0;
 }
 .field select {
@@ -707,7 +708,7 @@ fieldset {
   min-width: 0;
 }
 legend {
-  font-size: 12px;
+  font-size: 13px;
   color: #c3cde0;
   margin-bottom: 10px;
 }

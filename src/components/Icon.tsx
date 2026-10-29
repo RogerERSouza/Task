@@ -15,6 +15,7 @@ type IconName =
   | 'home'
   | 'arrow-up'
   | 'arrow-down'
+  | 'sort'
   | 'trash'
   | 'settings'
 const paths: Record<IconName, string> = {
@@ -32,6 +33,7 @@ const paths: Record<IconName, string> = {
   home: 'm3 10 9-7 9 7v11h-7v-7h-4v7H3V10',
   'arrow-up': 'm6 12 6-6 6 6M12 6v14',
   'arrow-down': 'm6 12 6 6 6-6M12 18V4',
+  sort: 'm7 8 3-3 3 3M10 5v14m7-3-3 3 3 3m-3-3V5',
   settings: 'M4 7h16M4 17h16M8 4v6M16 14v6',
   trash: 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7',
 }

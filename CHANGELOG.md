@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.6.2 — 2026-10-28
+
+### Alterado
+
+- O botão de ordenação agora usa um ícone vertical de setas, alinhado ao padrão dos demais ícones do app.
+- O menu de ordenação e os formulários receberam uma ampliação leve para melhorar a leitura no PC.
+- Adicionada a ordenação “Mais antigas”; “Mais recentes” agora coloca primeiro as seções criadas por último.
+
 ## 0.6.1 — 2026-10-28
 
 ### Alterado
