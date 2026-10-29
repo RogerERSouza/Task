@@ -57,6 +57,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [ ] Dar retorno visual sutil ao tocar em cartões, botões e ações concluídas.
 - [ ] Aplicar animação de aparecimento aos menus de ações de lembretes, como alterar ou excluir, inspirada na sensação fluida de calendários modernos.
 - [ ] Respeitar a preferência do dispositivo por reduzir animações (`prefers-reduced-motion`).
+- [ ] Redesenhar os cartões de lembrete: formato mais alto que largo, aparência de nota/papel mais marcante e detalhes visuais que evitem o aspecto de quadrado genérico.
 
 ### Organização e uso diário
 
