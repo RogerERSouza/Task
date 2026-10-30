@@ -6,6 +6,7 @@ import {
   getSectionPath,
   isNotebook,
   parseNotebookBackup,
+  removeContent,
   removeSectionTree,
 } from '../src/lib/notebook.ts'
 import {
@@ -89,6 +90,21 @@ test('removing a section also removes its descendants and contents', () => {
     updated.contents.map((content) => content.sectionId),
     ['keep'],
   )
+})
+
+test('removing content preserves other notebook data', () => {
+  const first = createContent('note', 'section', 'Primeiro')
+  const second = createContent('checklist', 'section', 'Segundo')
+  const notebook = {
+    schemaVersion: 1 as const,
+    sections: [],
+    contents: [first, second],
+    reminders: [{ id: 'reminder', title: 'Lembrar', date: '2026-11-01' }],
+  }
+
+  const updated = removeContent(notebook, first.id)
+  assert.deepEqual(updated.contents, [second])
+  assert.deepEqual(updated.reminders, notebook.reminders)
 })
 
 test('new content receives an independent id and empty data for its type', () => {

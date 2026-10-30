@@ -8,12 +8,16 @@ export function ContentEditor({
   content,
   onChange,
   onCount,
+  onRemove,
 }: {
   content: Content
   onChange: (content: Content) => void
   onCount: (delta: number) => void
+  onRemove: () => void
 }) {
   const [newItem, setNewItem] = useState('')
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState(false)
   function updateItems(items: ListItem[]) {
     if (content.kind === 'checklist' || content.kind === 'tutorial')
       onChange({ ...content, items })
@@ -256,6 +260,41 @@ export function ContentEditor({
           </div>
         </>
       )}
+      <div className="content-delete">
+        {isDeleteConfirmationVisible ? (
+          <>
+            <p className="form-warning" role="alert">
+              Este conteúdo será apagado permanentemente.
+            </p>
+            <div className="content-delete-actions">
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setIsDeleteConfirmationVisible(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="danger-button"
+                onClick={onRemove}
+              >
+                <Icon name="trash" />
+                Excluir conteúdo
+              </button>
+            </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="text-button danger"
+            onClick={() => setIsDeleteConfirmationVisible(true)}
+          >
+            <Icon name="trash" />
+            Excluir conteúdo
+          </button>
+        )}
+      </div>
     </div>
   )
 }

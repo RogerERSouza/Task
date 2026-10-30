@@ -63,6 +63,13 @@ export function removeSectionTree(notebook: Notebook, id: string): Notebook {
   }
 }
 
+export function removeContent(notebook: Notebook, id: string): Notebook {
+  return {
+    ...notebook,
+    contents: notebook.contents.filter((content) => content.id !== id),
+  }
+}
+
 export function createContent(
   kind: Content['kind'],
   sectionId: string,

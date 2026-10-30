@@ -14,6 +14,7 @@ import {
   getCounterTotal,
   getSectionPath,
   parseNotebookBackup,
+  removeContent,
   removeSectionTree,
   SECTION_COLORS,
 } from './lib/notebook'
@@ -55,6 +56,14 @@ function navigate(kind?: 'section' | 'content', id?: string) {
   if (documentWithTransitions.startViewTransition)
     documentWithTransitions.startViewTransition(updateRoute)
   else updateRoute()
+}
+
+function getContentColumns(contents: Content[], isCompactLayout: boolean) {
+  if (isCompactLayout) return [contents]
+  return [
+    contents.filter((_, index) => index % 2 === 0),
+    contents.filter((_, index) => index % 2 === 1),
+  ]
 }
 
 function SectionForm({
@@ -626,10 +635,19 @@ function App() {
   const [editor, setEditor] = useState<Editor>(null)
   const [importError, setImportError] = useState('')
   const importInputRef = useRef<HTMLInputElement>(null)
+  const [isCompactContentLayout, setIsCompactContentLayout] = useState(
+    () => window.matchMedia('(max-width: 760px)').matches,
+  )
   const [now, setNow] = useState(() => new Date())
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000)
     return () => window.clearInterval(timer)
+  }, [])
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 760px)')
+    const updateContentLayout = () => setIsCompactContentLayout(media.matches)
+    media.addEventListener('change', updateContentLayout)
+    return () => media.removeEventListener('change', updateContentLayout)
   }, [])
   useEffect(() => {
     if (!isSortMenuOpen) return
@@ -677,6 +695,10 @@ function App() {
       content.sectionId === currentSection?.id &&
       !colorFilter &&
       content.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery),
+  )
+  const contentColumns = getContentColumns(
+    visibleContents,
+    isCompactContentLayout,
   )
   const reminders = [...notebook.reminders].sort(
     (first, second) =>
@@ -817,6 +839,12 @@ function App() {
               content={currentContent}
               onChange={updateContent}
               onCount={(delta) => changeCount(currentContent.id, delta)}
+              onRemove={() => {
+                setNotebook((current) =>
+                  removeContent(current, currentContent.id),
+                )
+                openSection(currentContent.sectionId)
+              }}
             />
           </>
         ) : (
@@ -1054,15 +1082,19 @@ function App() {
                 ))}
               </div>
               {visibleContents.length > 0 && (
-                <div className="content-grid">
-                  {visibleContents.map((content) => (
-                    <ContentCard
-                      key={content.id}
-                      content={content}
-                      onOpen={() => navigate('content', content.id)}
-                      onCount={(delta) => changeCount(content.id, delta)}
-                      onChange={updateContent}
-                    />
+                <div className="content-columns">
+                  {contentColumns.map((column, index) => (
+                    <div className="content-column" key={index}>
+                      {column.map((content) => (
+                        <ContentCard
+                          key={content.id}
+                          content={content}
+                          onOpen={() => navigate('content', content.id)}
+                          onCount={(delta) => changeCount(content.id, delta)}
+                          onChange={updateContent}
+                        />
+                      ))}
+                    </div>
                   ))}
                 </div>
               )}
@@ -1158,7 +1190,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.11.3</span>
+              <span className="muted">Tomohu · v0.11.4</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (
