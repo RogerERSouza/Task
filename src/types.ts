@@ -7,6 +7,7 @@ export interface Section {
   emoji: string
   color: string
   favorite?: boolean
+  tags?: string[]
 }
 
 export interface ListItem {

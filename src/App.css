@@ -368,8 +368,12 @@ h2 {
   border: none;
   background: transparent;
   color: #e6eaf2;
-  outline-offset: 0;
+  outline: none;
   font-size: 12px;
+}
+.search-field:focus-within {
+  border-color: #edcf94;
+  box-shadow: 0 0 0 3px #edcf9424;
 }
 .global-search-results {
   display: grid;
@@ -692,6 +696,58 @@ textarea::placeholder {
   font-weight: 500;
   padding-right: 10px;
   overflow-wrap: anywhere;
+}
+.section-tags,
+.tag-list,
+.sort-tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.section-tags span,
+.tag-chip,
+.sort-tag {
+  border: 1px solid #91a7cb42;
+  border-radius: 999px;
+  background: #182641;
+  color: #bac9e2;
+  font-size: 9px;
+  line-height: 1;
+  padding: 5px 7px;
+}
+.section-tags {
+  margin: 9px 0 1px;
+}
+.section-tags span {
+  max-width: 112px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tag-field {
+  display: grid;
+  gap: 10px;
+}
+.tag-field legend {
+  margin-bottom: 6px;
+}
+.tag-input-row {
+  display: flex;
+  gap: 8px;
+}
+.tag-input-row input {
+  min-width: 0;
+  flex: 1;
+}
+.tag-input-row .secondary-button {
+  min-height: 40px;
+}
+.tag-chip:hover,
+.sort-tag:hover,
+.sort-tag.active {
+  border-color: #edcf9490;
+  background: #38425a;
+  color: #f1d99d;
 }
 .section-open .muted {
   font-size: 10px;

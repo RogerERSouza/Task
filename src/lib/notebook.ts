@@ -121,7 +121,9 @@ export function isNotebook(value: unknown): value is Notebook {
         isText(section.emoji) &&
         isText(section.color) &&
         (section.favorite === undefined ||
-          typeof section.favorite === 'boolean'),
+          typeof section.favorite === 'boolean') &&
+        (section.tags === undefined ||
+          (Array.isArray(section.tags) && section.tags.every(isText))),
     ) &&
     Array.isArray(data.reminders) &&
     data.reminders.every(

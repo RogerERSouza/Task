@@ -212,6 +212,7 @@ test('sections keep an optional favorite preference in backups', () => {
           emoji: '⭐',
           color: '#edcf94',
           favorite: true,
+          tags: ['escola', 'provas'],
         },
       ],
     }),
@@ -228,6 +229,22 @@ test('sections keep an optional favorite preference in backups', () => {
           emoji: '',
           color: '#edcf94',
           favorite: 'yes',
+        },
+      ],
+    }),
+    false,
+  )
+  assert.equal(
+    isNotebook({
+      ...base,
+      sections: [
+        {
+          id: 'section',
+          parentId: null,
+          title: 'Inválida',
+          emoji: '',
+          color: '#edcf94',
+          tags: ['válida', 1],
         },
       ],
     }),

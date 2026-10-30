@@ -21,6 +21,16 @@ export function SectionCard({
           {section.emoji || '📁'}
         </span>
         <h3>{section.title}</h3>
+        {section.tags && section.tags.length > 0 && (
+          <span
+            className="section-tags"
+            aria-label={`Tags: ${section.tags.join(', ')}`}
+          >
+            {section.tags.map((tag) => (
+              <span key={tag}>#{tag}</span>
+            ))}
+          </span>
+        )}
         <span className="muted">
           {count} {count === 1 ? 'item' : 'itens'}
         </span>

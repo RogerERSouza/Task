@@ -54,7 +54,9 @@ export function searchNotebook(
 
   const sections = notebook.sections
     .filter((section) =>
-      normalize(`${section.title} ${section.emoji}`).includes(normalizedQuery),
+      normalize(
+        `${section.title} ${section.emoji} ${(section.tags ?? []).join(' ')}`,
+      ).includes(normalizedQuery),
     )
     .map((section) => ({
       kind: 'section' as const,

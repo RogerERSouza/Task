@@ -74,13 +74,15 @@ function SectionForm({
   onRemove,
 }: {
   section?: Section
-  onSave: (values: Pick<Section, 'title' | 'emoji' | 'color'>) => void
+  onSave: (values: Pick<Section, 'title' | 'emoji' | 'color' | 'tags'>) => void
   onRemove?: () => void
 }) {
   const [title, setTitle] = useState(section?.title ?? '')
   const [hasTriedToSave, setHasTriedToSave] = useState(false)
   const [emoji, setEmoji] = useState(section?.emoji ?? '📁')
   const [color, setColor] = useState(section?.color ?? SECTION_COLORS[0])
+  const [tags, setTags] = useState(section?.tags ?? [])
+  const [tagInput, setTagInput] = useState('')
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState(false)
   return (
@@ -91,7 +93,7 @@ function SectionForm({
         event.preventDefault()
         setHasTriedToSave(true)
         if (!title.trim()) return
-        onSave({ title: title.trim(), emoji: emoji.trim(), color })
+        onSave({ title: title.trim(), emoji: emoji.trim(), color, tags })
       }}
     >
       <label className="field">
@@ -158,6 +160,62 @@ function SectionForm({
         <span className="color-value" aria-live="polite">
           Cor atual: {color.toUpperCase()}
         </span>
+      </fieldset>
+      <fieldset className="tag-field">
+        <legend>
+          Tags <small>opcional</small>
+        </legend>
+        <div className="tag-input-row">
+          <input
+            maxLength={24}
+            placeholder="Ex.: escola"
+            value={tagInput}
+            onChange={(event) => setTagInput(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter') return
+              event.preventDefault()
+              const tag = tagInput
+                .trim()
+                .replace(/^#/, '')
+                .toLocaleLowerCase('pt-BR')
+              if (tag && !tags.includes(tag))
+                setTags((current) => [...current, tag])
+              setTagInput('')
+            }}
+          />
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => {
+              const tag = tagInput
+                .trim()
+                .replace(/^#/, '')
+                .toLocaleLowerCase('pt-BR')
+              if (tag && !tags.includes(tag))
+                setTags((current) => [...current, tag])
+              setTagInput('')
+            }}
+          >
+            Adicionar
+          </button>
+        </div>
+        {tags.length > 0 && (
+          <div className="tag-list" aria-label="Tags da seção">
+            {tags.map((tag) => (
+              <button
+                type="button"
+                className="tag-chip"
+                key={tag}
+                onClick={() =>
+                  setTags((current) => current.filter((item) => item !== tag))
+                }
+                aria-label={`Remover tag ${tag}`}
+              >
+                #{tag} ×
+              </button>
+            ))}
+          </div>
+        )}
       </fieldset>
       <button className="primary-button" type="submit">
         {section ? 'Salvar alterações' : 'Criar seção'}
@@ -632,6 +690,7 @@ function App() {
   const [query, setQuery] = useState('')
   const [sortOrder, setSortOrder] = useState('newest')
   const [colorFilter, setColorFilter] = useState<string | null>(null)
+  const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const [editor, setEditor] = useState<Editor>(null)
@@ -678,11 +737,15 @@ function App() {
   const usedColors = [
     ...new Set(sectionsInScope.map((section) => section.color)),
   ]
+  const usedTags = [
+    ...new Set(sectionsInScope.flatMap((section) => section.tags ?? [])),
+  ].sort((first, second) => first.localeCompare(second, 'pt-BR'))
   const visibleSections = notebook.sections.filter(
     (section) =>
       (isHome && normalizedQuery ? true : section.parentId === parentId) &&
       section.title.toLocaleLowerCase('pt-BR').includes(normalizedQuery) &&
-      (!colorFilter || section.color === colorFilter),
+      (!colorFilter || section.color === colorFilter) &&
+      (!tagFilter || section.tags?.includes(tagFilter)),
   )
   if (sortOrder === 'newest') visibleSections.reverse()
   if (sortOrder === 'alphabetical')
@@ -714,6 +777,7 @@ function App() {
   function openSection(id?: string) {
     setQuery('')
     setColorFilter(null)
+    setTagFilter(null)
     setIsSortMenuOpen(false)
     navigate(id ? 'section' : undefined, id)
   }
@@ -957,7 +1021,7 @@ function App() {
                       aria-haspopup="menu"
                       onClick={() => setIsSortMenuOpen((isOpen) => !isOpen)}
                     >
-                      Ordenar{colorFilter ? ' e filtrar' : ''}
+                      Ordenar{colorFilter || tagFilter ? ' e filtrar' : ''}
                       <Icon name="sort" />
                     </button>
                     {isSortMenuOpen && (
@@ -1045,6 +1109,44 @@ function App() {
                                     setIsSortMenuOpen(false)
                                   }}
                                 />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                        {usedTags.length > 0 && (
+                          <>
+                            <span className="sort-menu-label">
+                              Filtrar por tag
+                            </span>
+                            <div className="sort-tag-options" role="group">
+                              <button
+                                type="button"
+                                className={
+                                  tagFilter ? 'sort-tag' : 'sort-tag active'
+                                }
+                                onClick={() => {
+                                  setTagFilter(null)
+                                  setIsSortMenuOpen(false)
+                                }}
+                              >
+                                Todas
+                              </button>
+                              {usedTags.map((tag) => (
+                                <button
+                                  key={tag}
+                                  type="button"
+                                  className={
+                                    tagFilter === tag
+                                      ? 'sort-tag active'
+                                      : 'sort-tag'
+                                  }
+                                  onClick={() => {
+                                    setTagFilter(tag)
+                                    setIsSortMenuOpen(false)
+                                  }}
+                                >
+                                  #{tag}
+                                </button>
                               ))}
                             </div>
                           </>
@@ -1233,7 +1335,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.11.4</span>
+              <span className="muted">Tomohu · v0.13.0</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (
