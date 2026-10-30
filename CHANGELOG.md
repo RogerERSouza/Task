@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.10.0 — 2026-10-29
+
+### Alterado
+
+- Cartões de lembrete foram redesenhados para um formato vertical de nota, com mais espaço para leitura e menos aparência de bloco genérico.
+- Data, título e tempo restante agora têm hierarquia visual própria; a fita e a textura de papel também receberam mais detalhe.
+
 ## 0.9.0 — 2026-10-29
 
 ### Adicionado

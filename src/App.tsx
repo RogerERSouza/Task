@@ -1114,7 +1114,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.9.0</span>
+              <span className="muted">Tomohu · v0.10.0</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (
