@@ -44,6 +44,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ## Mini patches planejados
 
+- [x] Corrigir o espaço visual ao expandir listas e permitir excluir uma seção com confirmação, incluindo suas subseções e conteúdos. — `0.11.3`
 - [x] Trocar os controles atuais de ordenação por um único botão dropdown, com filtro pelas cores já usadas e ordem por recentes, antigas ou A–Z. — `0.6.2`
 - [x] Melhorar fluidez ao entrar em sessões, abrir conteúdos e executar ações. — `0.7.0`
 - [ ] Pequenos ajustes de acessibilidade, textos, espaçamentos e responsividade que surgirem nos testes.

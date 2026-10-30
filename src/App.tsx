@@ -14,6 +14,7 @@ import {
   getCounterTotal,
   getSectionPath,
   parseNotebookBackup,
+  removeSectionTree,
   SECTION_COLORS,
 } from './lib/notebook'
 import {
@@ -59,14 +60,18 @@ function navigate(kind?: 'section' | 'content', id?: string) {
 function SectionForm({
   section,
   onSave,
+  onRemove,
 }: {
   section?: Section
   onSave: (values: Pick<Section, 'title' | 'emoji' | 'color'>) => void
+  onRemove?: () => void
 }) {
   const [title, setTitle] = useState(section?.title ?? '')
   const [hasTriedToSave, setHasTriedToSave] = useState(false)
   const [emoji, setEmoji] = useState(section?.emoji ?? '📁')
   const [color, setColor] = useState(section?.color ?? SECTION_COLORS[0])
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
+    useState(false)
   return (
     <form
       className="modal-form"
@@ -146,6 +151,44 @@ function SectionForm({
       <button className="primary-button" type="submit">
         {section ? 'Salvar alterações' : 'Criar seção'}
       </button>
+      {section && onRemove && (
+        <div className="section-delete">
+          {isDeleteConfirmationVisible ? (
+            <>
+              <p className="form-warning" role="alert">
+                Esta seção, suas subseções e todos os conteúdos internos serão
+                apagados permanentemente.
+              </p>
+              <div className="section-delete-actions">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => setIsDeleteConfirmationVisible(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="danger-button"
+                  onClick={onRemove}
+                >
+                  <Icon name="trash" />
+                  Excluir seção
+                </button>
+              </div>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="text-button danger"
+              onClick={() => setIsDeleteConfirmationVisible(true)}
+            >
+              <Icon name="trash" />
+              Excluir seção
+            </button>
+          )}
+        </div>
+      )}
     </form>
   )
 }
@@ -1115,7 +1158,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.11.1</span>
+              <span className="muted">Tomohu · v0.11.3</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (
@@ -1179,6 +1222,13 @@ function App() {
                       ],
                 }))
                 setEditor(null)
+              }}
+              onRemove={() => {
+                const section = editor.section
+                if (!section) return
+                setNotebook((current) => removeSectionTree(current, section.id))
+                setEditor(null)
+                openSection(section.parentId ?? undefined)
               }}
             />
           )}

@@ -34,6 +34,35 @@ export function getSectionPath(
   return path
 }
 
+export function removeSectionTree(notebook: Notebook, id: string): Notebook {
+  const sectionIdsToRemove = new Set([id])
+  let foundChild = true
+
+  while (foundChild) {
+    foundChild = false
+    for (const section of notebook.sections) {
+      if (
+        section.parentId !== null &&
+        sectionIdsToRemove.has(section.parentId) &&
+        !sectionIdsToRemove.has(section.id)
+      ) {
+        sectionIdsToRemove.add(section.id)
+        foundChild = true
+      }
+    }
+  }
+
+  return {
+    ...notebook,
+    sections: notebook.sections.filter(
+      (section) => !sectionIdsToRemove.has(section.id),
+    ),
+    contents: notebook.contents.filter(
+      (content) => !sectionIdsToRemove.has(content.sectionId),
+    ),
+  }
+}
+
 export function createContent(
   kind: Content['kind'],
   sectionId: string,

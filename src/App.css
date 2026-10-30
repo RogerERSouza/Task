@@ -667,6 +667,9 @@ textarea::placeholder {
   box-shadow: 0 10px 24px #0810212e;
   transform: translateY(-2px);
 }
+.collapsible-content.is-expanded {
+  grid-column: 1 / -1;
+}
 .content-open,
 .content-summary {
   display: flex;
@@ -1426,6 +1429,39 @@ legend {
   min-height: 42px;
   border: 1px solid #d98f8980;
   border-radius: 10px;
+}
+.section-delete {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+.section-delete > .text-button {
+  justify-self: start;
+}
+.section-delete-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.danger-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #d98f8980;
+  border-radius: 10px;
+  background: #6e30343d;
+  color: #f0b0a8;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+.danger-button:hover {
+  border-color: #e8a29a;
+  background: #823d434d;
+  transform: translateY(-1px);
 }
 .editor-panel {
   padding: 28px;

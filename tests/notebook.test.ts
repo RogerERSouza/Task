@@ -6,6 +6,7 @@ import {
   getSectionPath,
   isNotebook,
   parseNotebookBackup,
+  removeSectionTree,
 } from '../src/lib/notebook.ts'
 import {
   formatReminderCountdown,
@@ -49,6 +50,45 @@ test('breadcrumbs follow parents and stop on cycles', () => {
   assert.deepEqual(getSectionPath(sections, 'missing'), [])
   sections[0].parentId = 'b'
   assert.equal(getSectionPath(sections, 'b').length, 2)
+})
+
+test('removing a section also removes its descendants and contents', () => {
+  const notebook = {
+    schemaVersion: 1 as const,
+    sections: [
+      { id: 'keep', parentId: null, title: 'Manter', emoji: '', color: '#fff' },
+      {
+        id: 'remove',
+        parentId: null,
+        title: 'Apagar',
+        emoji: '',
+        color: '#fff',
+      },
+      {
+        id: 'child',
+        parentId: 'remove',
+        title: 'Subseção',
+        emoji: '',
+        color: '#fff',
+      },
+    ],
+    contents: [
+      createContent('note', 'keep', 'Fica'),
+      createContent('note', 'remove', 'Sai'),
+      createContent('checklist', 'child', 'Também sai'),
+    ],
+    reminders: [],
+  }
+
+  const updated = removeSectionTree(notebook, 'remove')
+  assert.deepEqual(
+    updated.sections.map((section) => section.id),
+    ['keep'],
+  )
+  assert.deepEqual(
+    updated.contents.map((content) => content.sectionId),
+    ['keep'],
+  )
 })
 
 test('new content receives an independent id and empty data for its type', () => {
