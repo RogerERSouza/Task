@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.10.1 — 2026-10-29
+
+### Alterado
+
+- Cartões de lembrete ficaram menores e quase quadrados, mantendo apenas uma leve altura extra para leitura.
+- A faixa superior agora alterna quatro modelos de papel compatíveis com o Tomohu: fita, clipe, espiral e borda rasgada.
+
 ## 0.10.0 — 2026-10-29
 
 ### Alterado
