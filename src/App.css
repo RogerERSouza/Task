@@ -751,6 +751,13 @@ textarea::placeholder {
   align-items: flex-start;
   gap: 8px;
   line-height: 1.45;
+  border-radius: 8px;
+  margin: 0 -6px;
+  padding: 5px 6px;
+  transition: background 160ms ease;
+}
+.is-expanded .content-items-list li:hover {
+  background: #34425d6b;
 }
 .content-items-list input[type='checkbox'] {
   appearance: none;
@@ -759,7 +766,7 @@ textarea::placeholder {
   height: 23px;
   flex: 0 0 23px;
   place-content: center;
-  margin: -2px 1px 0 0;
+  margin: 0 1px 0 0;
   border: 1px solid #91a7cb80;
   border-radius: 7px;
   background: #18243d;

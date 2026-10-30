@@ -30,13 +30,21 @@ export function ContentCard({
             ? 'content-card collapsible-content is-expanded'
             : 'content-card collapsible-content'
         }
+        onClick={() => {
+          if (isExpanded) {
+            setIsExpanded(false)
+          }
+        }}
       >
         <button
           type="button"
           className="content-summary"
           aria-expanded={isExpanded}
           aria-controls={detailsId}
-          onClick={() => setIsExpanded((expanded) => !expanded)}
+          onClick={(event) => {
+            event.stopPropagation()
+            setIsExpanded((expanded) => !expanded)
+          }}
         >
           <span className={`content-label ${content.kind}`}>
             <Icon name={content.kind} />
@@ -72,7 +80,10 @@ export function ContentCard({
             {content.items.length > 0 ? (
               <ul className="content-items-list">
                 {content.items.map((item, index) => (
-                  <li key={item.id}>
+                  <li
+                    key={item.id}
+                    onClick={(event) => event.stopPropagation()}
+                  >
                     {content.kind === 'tutorial' && (
                       <span className="content-item-number">{index + 1}.</span>
                     )}
