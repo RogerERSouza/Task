@@ -1018,6 +1018,7 @@ function App() {
                       content={content}
                       onOpen={() => navigate('content', content.id)}
                       onCount={(delta) => changeCount(content.id, delta)}
+                      onChange={updateContent}
                     />
                   ))}
                 </div>
@@ -1114,7 +1115,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.11.0</span>
+              <span className="muted">Tomohu · v0.11.1</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (

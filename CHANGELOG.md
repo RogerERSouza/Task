@@ -1,5 +1,15 @@
 # Histórico de versões
 
+## 0.11.1 — 2026-10-30
+
+### Corrigido
+
+- Expandir uma checklist ou tutorial não estica mais os outros cartões da mesma linha.
+
+### Adicionado
+
+- Checklists expandidas agora permitem marcar e desmarcar itens diretamente na seção, com caixas maiores e mais fáceis de tocar.
+
 ## 0.11.0 — 2026-10-30
 
 ### Adicionado

@@ -8,10 +8,12 @@ export function ContentCard({
   content,
   onOpen,
   onCount,
+  onChange,
 }: {
   content: Content
   onOpen: () => void
   onCount: (delta: number) => void
+  onChange: (content: Content) => void
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const total =
@@ -75,9 +77,21 @@ export function ContentCard({
                       <span className="content-item-number">{index + 1}.</span>
                     )}
                     {content.kind === 'checklist' && (
-                      <span aria-hidden="true">
-                        {item.completed ? '☑' : '☐'}
-                      </span>
+                      <input
+                        type="checkbox"
+                        aria-label={`Concluir ${item.text}`}
+                        checked={item.completed}
+                        onChange={() =>
+                          onChange({
+                            ...content,
+                            items: content.items.map((current) =>
+                              current.id === item.id
+                                ? { ...current, completed: !current.completed }
+                                : current,
+                            ),
+                          })
+                        }
+                      />
                     )}
                     <span className={item.completed ? 'completed' : ''}>
                       {item.text}
