@@ -16,6 +16,7 @@ import {
   getReminderPriority,
   isReminderExpired,
 } from '../src/lib/reminders.ts'
+import { searchNotebook } from '../src/lib/search.ts'
 
 test('counter history includes increases and corrections', () => {
   assert.equal(
@@ -105,6 +106,57 @@ test('removing content preserves other notebook data', () => {
   const updated = removeContent(notebook, first.id)
   assert.deepEqual(updated.contents, [second])
   assert.deepEqual(updated.reminders, notebook.reminders)
+})
+
+test('global search finds sections, content text, list items, and reminders', () => {
+  const notebook = {
+    schemaVersion: 1 as const,
+    sections: [
+      {
+        id: 'study',
+        parentId: null,
+        title: 'Estudos',
+        emoji: '📚',
+        color: '#fff',
+      },
+    ],
+    contents: [
+      {
+        id: 'note',
+        sectionId: 'study',
+        kind: 'note' as const,
+        title: 'Ideias',
+        text: 'Revisar matemática financeira',
+      },
+      {
+        id: 'list',
+        sectionId: 'study',
+        kind: 'checklist' as const,
+        title: 'Materiais',
+        items: [{ id: 'item', text: 'Caderno de português', completed: false }],
+      },
+    ],
+    reminders: [
+      { id: 'reminder', title: 'Prova de História', date: '2026-11-01' },
+    ],
+  }
+
+  assert.deepEqual(
+    searchNotebook(notebook, 'estudos').map((result) => result.kind),
+    ['section'],
+  )
+  assert.deepEqual(
+    searchNotebook(notebook, 'financeira').map((result) => result.id),
+    ['note'],
+  )
+  assert.deepEqual(
+    searchNotebook(notebook, 'portugues').map((result) => result.id),
+    ['list'],
+  )
+  assert.deepEqual(
+    searchNotebook(notebook, 'história').map((result) => result.id),
+    ['reminder'],
+  )
 })
 
 test('new content receives an independent id and empty data for its type', () => {

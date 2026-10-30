@@ -3,6 +3,7 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { CalendarPicker } from './components/CalendarPicker'
 import { ContentCard } from './components/ContentCard'
 import { ContentEditor } from './components/ContentEditor'
+import { GlobalSearchResults } from './components/GlobalSearchResults'
 import { Icon } from './components/Icon'
 import { Modal } from './components/Modal'
 import { SectionCard } from './components/SectionCard'
@@ -27,6 +28,7 @@ import {
   getReminderPriority,
 } from './lib/reminders'
 import type { ReminderDraft } from './lib/reminders'
+import { searchNotebook } from './lib/search'
 import type { Content, ContentKind, Notebook, Reminder, Section } from './types'
 import './App.css'
 
@@ -666,6 +668,7 @@ function App() {
     }
   }, [isSortMenuOpen])
   const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR')
+  const isGlobalSearchActive = isHome && Boolean(normalizedQuery)
   const parentId = currentSection?.id ?? null
   const sectionsInScope = notebook.sections.filter(
     (section) =>
@@ -700,6 +703,9 @@ function App() {
     visibleContents,
     isCompactContentLayout,
   )
+  const globalSearchResults = isGlobalSearchActive
+    ? searchNotebook(notebook, query)
+    : []
   const reminders = [...notebook.reminders].sort(
     (first, second) =>
       getReminderPriority(first, now) - getReminderPriority(second, now),
@@ -911,9 +917,15 @@ function App() {
             <section aria-labelledby="sections-title" className="sections-area">
               <div className="subheading">
                 <h2 id="sections-title">
-                  {isHome ? 'Suas seções' : 'Dentro desta seção'}
+                  {isGlobalSearchActive
+                    ? 'Resultados da busca'
+                    : isHome
+                      ? 'Suas seções'
+                      : 'Dentro desta seção'}
                   <span className="section-count">
-                    {visibleSections.length + visibleContents.length}
+                    {isGlobalSearchActive
+                      ? globalSearchResults.length
+                      : visibleSections.length + visibleContents.length}
                   </span>
                 </h2>
               </div>
@@ -922,117 +934,125 @@ function App() {
                   <Icon name="search" />
                   <input
                     type="search"
-                    aria-label="Pesquisar seções e conteúdos"
+                    aria-label={
+                      isHome
+                        ? 'Pesquisar em todo o Tomohu'
+                        : 'Pesquisar nesta seção'
+                    }
                     placeholder={
-                      isHome ? 'Pesquisar seções…' : 'Pesquisar nesta seção…'
+                      isHome
+                        ? 'Pesquisar em todo o Tomohu…'
+                        : 'Pesquisar nesta seção…'
                     }
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
                 </label>
-                <div className="sort-menu" ref={sortMenuRef}>
-                  <button
-                    type="button"
-                    className="sort-menu-trigger"
-                    aria-expanded={isSortMenuOpen}
-                    aria-haspopup="menu"
-                    onClick={() => setIsSortMenuOpen((isOpen) => !isOpen)}
-                  >
-                    Ordenar{colorFilter ? ' e filtrar' : ''}
-                    <Icon name="sort" />
-                  </button>
-                  {isSortMenuOpen && (
-                    <div className="sort-menu-panel" role="menu">
-                      <span className="sort-menu-label">Ordenar por</span>
-                      <button
-                        type="button"
-                        className={
-                          sortOrder === 'newest'
-                            ? 'sort-option active'
-                            : 'sort-option'
-                        }
-                        onClick={() => {
-                          setSortOrder('newest')
-                          setIsSortMenuOpen(false)
-                        }}
-                        aria-pressed={sortOrder === 'newest'}
-                      >
-                        Mais recentes
-                      </button>
-                      <button
-                        type="button"
-                        className={
-                          sortOrder === 'oldest'
-                            ? 'sort-option active'
-                            : 'sort-option'
-                        }
-                        onClick={() => {
-                          setSortOrder('oldest')
-                          setIsSortMenuOpen(false)
-                        }}
-                        aria-pressed={sortOrder === 'oldest'}
-                      >
-                        Mais antigas
-                      </button>
-                      <button
-                        type="button"
-                        className={
-                          sortOrder === 'alphabetical'
-                            ? 'sort-option active'
-                            : 'sort-option'
-                        }
-                        onClick={() => {
-                          setSortOrder('alphabetical')
-                          setIsSortMenuOpen(false)
-                        }}
-                        aria-pressed={sortOrder === 'alphabetical'}
-                      >
-                        A–Z
-                      </button>
-                      {usedColors.length > 0 && (
-                        <>
-                          <span className="sort-menu-label">
-                            Filtrar por cor
-                          </span>
-                          <div className="sort-color-options" role="group">
-                            <button
-                              type="button"
-                              className={
-                                colorFilter
-                                  ? 'sort-color-clear'
-                                  : 'sort-color-clear active'
-                              }
-                              onClick={() => {
-                                setColorFilter(null)
-                                setIsSortMenuOpen(false)
-                              }}
-                            >
-                              Todas
-                            </button>
-                            {usedColors.map((color) => (
+                {!isGlobalSearchActive && (
+                  <div className="sort-menu" ref={sortMenuRef}>
+                    <button
+                      type="button"
+                      className="sort-menu-trigger"
+                      aria-expanded={isSortMenuOpen}
+                      aria-haspopup="menu"
+                      onClick={() => setIsSortMenuOpen((isOpen) => !isOpen)}
+                    >
+                      Ordenar{colorFilter ? ' e filtrar' : ''}
+                      <Icon name="sort" />
+                    </button>
+                    {isSortMenuOpen && (
+                      <div className="sort-menu-panel" role="menu">
+                        <span className="sort-menu-label">Ordenar por</span>
+                        <button
+                          type="button"
+                          className={
+                            sortOrder === 'newest'
+                              ? 'sort-option active'
+                              : 'sort-option'
+                          }
+                          onClick={() => {
+                            setSortOrder('newest')
+                            setIsSortMenuOpen(false)
+                          }}
+                          aria-pressed={sortOrder === 'newest'}
+                        >
+                          Mais recentes
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            sortOrder === 'oldest'
+                              ? 'sort-option active'
+                              : 'sort-option'
+                          }
+                          onClick={() => {
+                            setSortOrder('oldest')
+                            setIsSortMenuOpen(false)
+                          }}
+                          aria-pressed={sortOrder === 'oldest'}
+                        >
+                          Mais antigas
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            sortOrder === 'alphabetical'
+                              ? 'sort-option active'
+                              : 'sort-option'
+                          }
+                          onClick={() => {
+                            setSortOrder('alphabetical')
+                            setIsSortMenuOpen(false)
+                          }}
+                          aria-pressed={sortOrder === 'alphabetical'}
+                        >
+                          A–Z
+                        </button>
+                        {usedColors.length > 0 && (
+                          <>
+                            <span className="sort-menu-label">
+                              Filtrar por cor
+                            </span>
+                            <div className="sort-color-options" role="group">
                               <button
-                                key={color}
                                 type="button"
                                 className={
-                                  colorFilter === color
-                                    ? 'sort-color selected'
-                                    : 'sort-color'
+                                  colorFilter
+                                    ? 'sort-color-clear'
+                                    : 'sort-color-clear active'
                                 }
-                                style={{ backgroundColor: color }}
-                                aria-label={`Filtrar pela cor ${color}`}
-                                aria-pressed={colorFilter === color}
                                 onClick={() => {
-                                  setColorFilter(color)
+                                  setColorFilter(null)
                                   setIsSortMenuOpen(false)
                                 }}
-                              />
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
+                              >
+                                Todas
+                              </button>
+                              {usedColors.map((color) => (
+                                <button
+                                  key={color}
+                                  type="button"
+                                  className={
+                                    colorFilter === color
+                                      ? 'sort-color selected'
+                                      : 'sort-color'
+                                  }
+                                  style={{ backgroundColor: color }}
+                                  aria-label={`Filtrar pela cor ${color}`}
+                                  aria-pressed={colorFilter === color}
+                                  onClick={() => {
+                                    setColorFilter(color)
+                                    setIsSortMenuOpen(false)
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <button
                   className="primary-button"
                   onClick={() => setEditor({ kind: 'section' })}
@@ -1050,63 +1070,86 @@ function App() {
                   </button>
                 )}
               </div>
-              <div className="section-grid">
-                {visibleSections.map((section) => (
-                  <SectionCard
-                    key={section.id}
-                    section={section}
-                    count={
-                      notebook.sections.filter(
-                        (child) => child.parentId === section.id,
-                      ).length +
-                      notebook.contents.filter(
-                        (content) => content.sectionId === section.id,
-                      ).length
-                    }
-                    onOpen={() => openSection(section.id)}
-                    onEdit={() => setEditor({ kind: 'section', section })}
-                    onToggleFavorite={() =>
-                      setNotebook((current) => ({
-                        ...current,
-                        sections: current.sections.map((currentSection) =>
-                          currentSection.id === section.id
-                            ? {
-                                ...currentSection,
-                                favorite: !currentSection.favorite,
+              {isGlobalSearchActive ? (
+                <GlobalSearchResults
+                  results={globalSearchResults}
+                  onOpenSection={openSection}
+                  onOpenContent={(id) => navigate('content', id)}
+                  onOpenReminder={(id) => {
+                    const reminder = notebook.reminders.find(
+                      (current) => current.id === id,
+                    )
+                    if (reminder)
+                      setEditor(
+                        isReminderExpired(reminder, now)
+                          ? { kind: 'expired-reminder', reminder }
+                          : { kind: 'reminder', reminder },
+                      )
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="section-grid">
+                    {visibleSections.map((section) => (
+                      <SectionCard
+                        key={section.id}
+                        section={section}
+                        count={
+                          notebook.sections.filter(
+                            (child) => child.parentId === section.id,
+                          ).length +
+                          notebook.contents.filter(
+                            (content) => content.sectionId === section.id,
+                          ).length
+                        }
+                        onOpen={() => openSection(section.id)}
+                        onEdit={() => setEditor({ kind: 'section', section })}
+                        onToggleFavorite={() =>
+                          setNotebook((current) => ({
+                            ...current,
+                            sections: current.sections.map((currentSection) =>
+                              currentSection.id === section.id
+                                ? {
+                                    ...currentSection,
+                                    favorite: !currentSection.favorite,
+                                  }
+                                : currentSection,
+                            ),
+                          }))
+                        }
+                      />
+                    ))}
+                  </div>
+                  {visibleContents.length > 0 && (
+                    <div className="content-columns">
+                      {contentColumns.map((column, index) => (
+                        <div className="content-column" key={index}>
+                          {column.map((content) => (
+                            <ContentCard
+                              key={content.id}
+                              content={content}
+                              onOpen={() => navigate('content', content.id)}
+                              onCount={(delta) =>
+                                changeCount(content.id, delta)
                               }
-                            : currentSection,
-                        ),
-                      }))
-                    }
-                  />
-                ))}
-              </div>
-              {visibleContents.length > 0 && (
-                <div className="content-columns">
-                  {contentColumns.map((column, index) => (
-                    <div className="content-column" key={index}>
-                      {column.map((content) => (
-                        <ContentCard
-                          key={content.id}
-                          content={content}
-                          onOpen={() => navigate('content', content.id)}
-                          onCount={(delta) => changeCount(content.id, delta)}
-                          onChange={updateContent}
-                        />
+                              onChange={updateContent}
+                            />
+                          ))}
+                        </div>
                       ))}
                     </div>
-                  ))}
-                </div>
-              )}
-              {!visibleSections.length && !visibleContents.length && (
-                <div className="empty-state">
-                  <Icon name="note" />
-                  <h3>
-                    {normalizedQuery
-                      ? 'Nenhum resultado por aqui'
-                      : 'Seção vazia'}
-                  </h3>
-                </div>
+                  )}
+                  {!visibleSections.length && !visibleContents.length && (
+                    <div className="empty-state">
+                      <Icon name="note" />
+                      <h3>
+                        {normalizedQuery
+                          ? 'Nenhum resultado por aqui'
+                          : 'Seção vazia'}
+                      </h3>
+                    </div>
+                  )}
+                </>
               )}
             </section>
           </>

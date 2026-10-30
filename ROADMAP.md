@@ -66,7 +66,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Progresso visual em listas e coleções: quantidade, porcentagem e barra de avanço. — `0.8.0`
 - [x] Cartões de checklist e tutorial recolhíveis dentro da seção: começam compactos, expandem ao clicar para mostrar os itens e recolhem novamente, com animações curtas e fluidas. — `0.11.0`
 - [x] Favoritar/fixar seções importantes no topo. — `0.9.0`
-- [ ] Busca global por seções, conteúdos, notas, itens e lembretes.
+- [x] Busca global por seções, conteúdos, notas, itens de lista e lembretes, com abertura direta do resultado. — `0.12.0`
 - [ ] Tags para organizar por assunto, como `escola`, `pessoal` e `trabalho`.
 - [ ] Filtros adicionais por tipo de conteúdo e estado de conclusão, quando esses dados fizerem sentido para a tela.
 - [ ] Arquivar sessões e conteúdos concluídos sem apagar.
