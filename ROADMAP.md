@@ -45,18 +45,18 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 ## Mini patches planejados
 
 - [x] Trocar os controles atuais de ordenação por um único botão dropdown, com filtro pelas cores já usadas e ordem por recentes, antigas ou A–Z. — `0.6.2`
-- [ ] Melhorar fluidez ao entrar em sessões, abrir conteúdos e executar ações.
+- [x] Melhorar fluidez ao entrar em sessões, abrir conteúdos e executar ações. — `0.7.0`
 - [ ] Pequenos ajustes de acessibilidade, textos, espaçamentos e responsividade que surgirem nos testes.
 
 ## Updates planejadas
 
 ### Experiência visual e fluidez
 
-- [ ] Criar um sistema leve e consistente de animações para o Tomohu, sem aumentar o peso do app.
-- [ ] Animar a entrada e saída de menus, modais, calendários e seletores com transições curtas e suaves.
-- [ ] Dar retorno visual sutil ao tocar em cartões, botões e ações concluídas.
-- [ ] Aplicar animação de aparecimento aos menus de ações de lembretes, como alterar ou excluir, inspirada na sensação fluida de calendários modernos.
-- [ ] Respeitar a preferência do dispositivo por reduzir animações (`prefers-reduced-motion`).
+- [x] Criar um sistema leve e consistente de animações para o Tomohu, sem aumentar o peso do app. — `0.7.0`
+- [x] Animar a entrada de menus, modais, calendários e seletores com transições curtas e suaves. — `0.7.0`
+- [x] Dar retorno visual sutil ao tocar em cartões, botões e ações concluídas. — `0.7.0`
+- [x] Aplicar animação de aparecimento aos menus de ações de lembretes, como alterar ou excluir, inspirada na sensação fluida de calendários modernos. — `0.7.0`
+- [x] Respeitar a preferência do dispositivo por reduzir animações (`prefers-reduced-motion`). — `0.7.0`
 - [ ] Redesenhar os cartões de lembrete: formato mais alto que largo, aparência de nota/papel mais marcante e detalhes visuais que evitem o aspecto de quadrado genérico.
 
 ### Organização e uso diário

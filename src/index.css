@@ -76,6 +76,38 @@ button svg {
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 160ms;
-  animation-timing-function: ease-out;
+  animation-duration: 190ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(root) {
+  animation-name: view-transition-fade-out;
+}
+::view-transition-new(root) {
+  animation-name: view-transition-fade-in;
+}
+@keyframes view-transition-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes view-transition-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
 }

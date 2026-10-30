@@ -20,6 +20,7 @@
   border-radius: 18px;
   box-shadow: 0 8px 28px #0004;
   z-index: 10;
+  animation: nav-enter 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .bottom-nav-button {
   flex: 1;
@@ -38,6 +39,7 @@
 .bottom-nav-button.active {
   background: #edcf9410;
   color: #edcf94;
+  box-shadow: inset 0 0 0 1px #edcf9414;
 }
 .bottom-nav-button:hover {
   background: #ffffff09;
@@ -157,12 +159,20 @@ h2 {
   text-align: left;
   box-shadow: 0 6px 15px #0002;
   transform: rotate(-1.5deg);
+  transition:
+    box-shadow 180ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 180ms ease;
+  animation: card-enter 330ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reminder-paper:nth-child(even) {
   transform: rotate(1.3deg);
+  animation-delay: 45ms;
 }
 .reminder-paper:hover {
-  transform: rotate(0);
+  box-shadow: 0 10px 22px #0004;
+  filter: brightness(1.025);
+  transform: translateY(-3px) rotate(0);
 }
 .paper-tape {
   width: 48px;
@@ -287,7 +297,7 @@ textarea::placeholder {
   box-shadow: 0 16px 34px #081021aa;
   padding: 12px;
   transform-origin: top right;
-  animation: sort-menu-in 150ms ease-out;
+  animation: menu-enter 170ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sort-menu-label {
   margin: 4px 5px 5px;
@@ -346,7 +356,7 @@ textarea::placeholder {
     0 0 0 2px #22314e,
     0 0 0 4px #f1d99d;
 }
-@keyframes sort-menu-in {
+@keyframes menu-enter {
   from {
     opacity: 0;
     transform: translateY(-5px) scale(0.97);
@@ -354,11 +364,6 @@ textarea::placeholder {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .sort-menu-panel {
-    animation: none;
   }
 }
 .primary-button,
@@ -379,6 +384,13 @@ textarea::placeholder {
 .primary-button:hover:not(:disabled) {
   background: #f8e5b7;
   transform: translateY(-1px);
+}
+.primary-button:active:not(:disabled),
+.secondary-button:active:not(:disabled),
+.sort-menu-trigger:active:not(:disabled),
+.bottom-nav-button:active:not(:disabled),
+.text-button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
 }
 .secondary-button {
   background: #263450;
@@ -402,6 +414,9 @@ textarea::placeholder {
   background: #ffffff09;
   color: #f1d69a;
 }
+.icon-button:active:not(:disabled) {
+  transform: scale(0.9);
+}
 .icon-button.small {
   width: 28px;
   height: 28px;
@@ -422,12 +437,31 @@ textarea::placeholder {
   border-top: 2px solid;
   border-radius: 14px;
   transition:
-    background 0.15s,
-    transform 0.15s;
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: card-enter 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .section-card:hover {
   background: #2d3d5c;
+  box-shadow: 0 10px 24px #0810212e;
   transform: translateY(-2px);
+}
+.section-card:nth-child(2) {
+  animation-delay: 35ms;
+}
+.section-card:nth-child(3) {
+  animation-delay: 70ms;
+}
+.section-card:nth-child(4) {
+  animation-delay: 105ms;
+}
+.section-card:nth-child(5) {
+  animation-delay: 140ms;
+}
+.section-card:nth-child(6) {
+  animation-delay: 175ms;
 }
 .section-open {
   width: 100%;
@@ -480,6 +514,18 @@ textarea::placeholder {
   border: 1px solid #ffffff0b;
   border-radius: 14px;
   padding-bottom: 4px;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: card-enter 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.content-card:hover {
+  background: #24324f;
+  border-color: #8198bd32;
+  box-shadow: 0 10px 24px #0810212e;
+  transform: translateY(-2px);
 }
 .content-open {
   display: flex;
@@ -644,6 +690,10 @@ textarea::placeholder {
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
+  transform-origin: center bottom;
+}
+.modal[open] {
+  animation: modal-enter 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .modal::-webkit-scrollbar {
   width: 0;
@@ -652,6 +702,7 @@ textarea::placeholder {
 .modal::backdrop {
   background: #080f21b8;
   backdrop-filter: blur(5px);
+  animation: backdrop-enter 180ms ease-out;
 }
 .modal-header {
   display: flex;
@@ -824,6 +875,7 @@ legend {
   border-radius: 14px;
   padding: 14px;
   background: #18243d;
+  animation: panel-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .calendar-label {
   display: block;
@@ -999,10 +1051,13 @@ legend {
   background: #22314e;
   box-shadow: 0 14px 32px #08102199;
   padding: 12px;
+  transform-origin: top left;
+  animation: menu-enter 160ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reminder-time-range > .time-picker:last-child .time-picker-panel {
   right: 0;
   left: auto;
+  transform-origin: top right;
 }
 .time-picker-panel label {
   display: grid;
@@ -1079,6 +1134,37 @@ legend {
   display: flex;
   flex-direction: column;
   gap: 25px;
+  animation: panel-enter 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes nav-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 16px);
+  }
+}
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.975);
+  }
+}
+@keyframes backdrop-enter {
+  from {
+    background: #080f2100;
+    backdrop-filter: blur(0);
+  }
 }
 .list-editor .subheading {
   margin-bottom: 14px;
@@ -1306,16 +1392,6 @@ legend {
   }
   .add-item button {
     flex: 1;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .section-card,
-  .primary-button,
-  .editable-item > input[type='checkbox'] {
-    transition: none;
-  }
-  .section-card:hover {
-    transform: none;
   }
 }
 @media (max-width: 760px) {

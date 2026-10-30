@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 0.7.0 — 2026-10-29
+
+### Adicionado
+
+- Transições curtas entre páginas ao abrir seções e conteúdos em navegadores compatíveis.
+- Animações leves para entrada de cartões, menu de ordenação, calendário, seletores de hora, painéis e modais.
+- Resposta visual ao pressionar botões, cartões e ícones, deixando as ações mais claras sem pesar a interface.
+- A preferência do sistema por reduzir movimentos agora desativa animações e transições do Tomohu de forma abrangente.
+
 ## 0.6.3 — 2026-10-28
 
 ### Corrigido
