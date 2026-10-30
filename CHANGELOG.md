@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 0.10.2 — 2026-10-29
+
+### Alterado
+
+- Bordas rasgadas sutis foram adicionadas a diferentes modelos de nota, inclusive na lateral de um deles, sem comprometer a leitura.
+
 ## 0.10.1 — 2026-10-29
 
 ### Alterado

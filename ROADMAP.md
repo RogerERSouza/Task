@@ -57,7 +57,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 - [x] Dar retorno visual sutil ao tocar em cartões, botões e ações concluídas. — `0.7.0`
 - [x] Aplicar animação de aparecimento aos menus de ações de lembretes, como alterar ou excluir, inspirada na sensação fluida de calendários modernos. — `0.7.0`
 - [x] Respeitar a preferência do dispositivo por reduzir animações (`prefers-reduced-motion`). — `0.7.0`
-- [x] Redesenhar os cartões de lembrete: formato quase quadrado, levemente vertical, com variações de papel, fita, clipe, espiral e borda rasgada. — `0.10.1`
+- [x] Redesenhar os cartões de lembrete: formato quase quadrado, levemente vertical, com variações de papel, fita, clipe, espiral e bordas rasgadas sutis. — `0.10.2`
 
 ### Organização e uso diário
 
