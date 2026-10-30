@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { CONTENT_LABELS, getCounterTotal } from '../lib/notebook'
 import type { Content } from '../types'
 import { Icon } from './Icon'
@@ -12,8 +13,90 @@ export function ContentCard({
   onOpen: () => void
   onCount: (delta: number) => void
 }) {
+  const [isExpanded, setIsExpanded] = useState(false)
   const total =
     content.kind === 'counter' ? getCounterTotal(content.entries) : 0
+  const isCollapsible =
+    content.kind === 'checklist' || content.kind === 'tutorial'
+  const detailsId = `content-details-${content.id}`
+
+  if (isCollapsible) {
+    return (
+      <article
+        className={
+          isExpanded
+            ? 'content-card collapsible-content is-expanded'
+            : 'content-card collapsible-content'
+        }
+      >
+        <button
+          type="button"
+          className="content-summary"
+          aria-expanded={isExpanded}
+          aria-controls={detailsId}
+          onClick={() => setIsExpanded((expanded) => !expanded)}
+        >
+          <span className={`content-label ${content.kind}`}>
+            <Icon name={content.kind} />
+            {CONTENT_LABELS[content.kind]}
+          </span>
+          <h3>{content.title}</h3>
+          {!isExpanded && content.kind === 'checklist' && (
+            <ul className="checklist-preview">
+              {content.items.slice(0, 3).map((item) => (
+                <li key={item.id}>
+                  <span aria-hidden="true">{item.completed ? '☑' : '☐'}</span>
+                  <span className={item.completed ? 'completed' : ''}>
+                    {item.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {!isExpanded && content.kind === 'tutorial' && content.text && (
+            <p className="text-preview">{content.text}</p>
+          )}
+          <ListProgress items={content.items} />
+          <span className="content-expand-label">
+            {isExpanded ? 'Recolher itens' : 'Ver itens'}
+            <Icon name="chevron" />
+          </span>
+        </button>
+        <div className="content-details" id={detailsId}>
+          <div className="content-details-inner">
+            {content.kind === 'tutorial' && content.text && (
+              <p className="content-detail-text">{content.text}</p>
+            )}
+            {content.items.length > 0 ? (
+              <ul className="content-items-list">
+                {content.items.map((item, index) => (
+                  <li key={item.id}>
+                    {content.kind === 'tutorial' && (
+                      <span className="content-item-number">{index + 1}.</span>
+                    )}
+                    {content.kind === 'checklist' && (
+                      <span aria-hidden="true">
+                        {item.completed ? '☑' : '☐'}
+                      </span>
+                    )}
+                    <span className={item.completed ? 'completed' : ''}>
+                      {item.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted">Nenhum item adicionado ainda.</p>
+            )}
+            <button type="button" className="text-button" onClick={onOpen}>
+              Abrir para editar <Icon name="chevron" />
+            </button>
+          </div>
+        </div>
+      </article>
+    )
+  }
+
   return (
     <article className="content-card">
       <button className="content-open" onClick={onOpen}>
@@ -26,29 +109,6 @@ export function ContentCard({
           <p className="text-preview">
             {content.text || 'Abra para escrever sua nota.'}
           </p>
-        )}
-        {content.kind === 'tutorial' && (
-          <>
-            <p className="text-preview">
-              {content.text || 'Abra para organizar as instruções.'}
-            </p>
-            <ListProgress items={content.items} />
-          </>
-        )}
-        {content.kind === 'checklist' && (
-          <>
-            <ul className="checklist-preview">
-              {content.items.slice(0, 3).map((item) => (
-                <li key={item.id}>
-                  <span aria-hidden="true">{item.completed ? '☑' : '☐'}</span>
-                  <span className={item.completed ? 'completed' : ''}>
-                    {item.text}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <ListProgress items={content.items} />
-          </>
         )}
         <span className="open-label">
           Abrir {CONTENT_LABELS[content.kind].toLocaleLowerCase('pt-BR')}{' '}

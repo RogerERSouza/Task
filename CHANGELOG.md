@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.11.0 — 2026-10-30
+
+### Adicionado
+
+- Checklists e tutoriais agora expandem dentro da seção para mostrar todos os itens e recolhem novamente pelo mesmo cartão.
+- A abertura tem transição de altura, conteúdo e seta; o botão “Abrir para editar” mantém a página completa disponível para alterações.
+
 ## 0.10.2 — 2026-10-29
 
 ### Alterado
