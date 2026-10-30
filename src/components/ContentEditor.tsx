@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Content, ListItem } from '../types'
 import { getCounterTotal } from '../lib/notebook'
 import { Icon } from './Icon'
+import { ListProgress } from './ListProgress'
 
 export function ContentEditor({
   content,
@@ -69,11 +70,8 @@ export function ContentEditor({
         >
           <div className="subheading">
             <h2>{content.kind === 'tutorial' ? 'Passos' : 'Itens da lista'}</h2>
-            <span className="muted">
-              {content.items.filter((item) => item.completed).length}/
-              {content.items.length}
-            </span>
           </div>
+          <ListProgress items={content.items} />
           {content.items.length === 0 && (
             <p className="muted">
               Adicione o primeiro{' '}

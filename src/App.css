@@ -604,6 +604,42 @@ textarea::placeholder {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.list-progress {
+  display: grid;
+  width: 100%;
+  gap: 7px;
+  margin-top: 2px;
+}
+.list-progress-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #aab7cf;
+  font-size: 11px;
+}
+.list-progress-label strong {
+  color: #ecd49b;
+  font-variant-numeric: tabular-nums;
+}
+.list-progress-track {
+  width: 100%;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #0e1930;
+  box-shadow: inset 0 1px 2px #0003;
+}
+.list-progress-value {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #d7bb7b, #f0dca9);
+  box-shadow: 0 0 10px #edcf9455;
+  transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.list-editor > .list-progress {
+  margin: -5px 0 6px;
+}
 .completed {
   text-decoration: line-through;
   color: #7f8da4 !important;
@@ -1371,6 +1407,9 @@ legend {
   .content-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+  .list-progress-label {
+    font-size: 10px;
   }
   .editor-panel {
     padding: 18px;

@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 0.8.0 — 2026-10-29
+
+### Adicionado
+
+- Checklists e tutoriais agora mostram progresso visual com quantidade concluída, porcentagem e barra de avanço.
+- O progresso aparece tanto no cartão de prévia quanto dentro da lista, atualizando ao marcar ou desmarcar itens.
+
 ## 0.7.0 — 2026-10-29
 
 ### Adicionado

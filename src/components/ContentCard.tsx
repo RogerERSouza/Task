@@ -1,6 +1,7 @@
 import { CONTENT_LABELS, getCounterTotal } from '../lib/notebook'
 import type { Content } from '../types'
 import { Icon } from './Icon'
+import { ListProgress } from './ListProgress'
 
 export function ContentCard({
   content,
@@ -31,7 +32,7 @@ export function ContentCard({
             <p className="text-preview">
               {content.text || 'Abra para organizar as instruções.'}
             </p>
-            <span className="muted">{content.items.length} passos</span>
+            <ListProgress items={content.items} />
           </>
         )}
         {content.kind === 'checklist' && (
@@ -46,10 +47,7 @@ export function ContentCard({
                 </li>
               ))}
             </ul>
-            <span className="muted">
-              {content.items.filter((item) => item.completed).length} de{' '}
-              {content.items.length} concluídos
-            </span>
+            <ListProgress items={content.items} />
           </>
         )}
         <span className="open-label">
