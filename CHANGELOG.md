@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 0.9.0 — 2026-10-29
+
+### Adicionado
+
+- Seções podem ser fixadas no topo pelo ícone de estrela; um segundo toque remove o favorito.
+- Favoritas ficam primeiro mesmo ao ordenar por recentes, antigas ou A–Z, sem mudar a ordem entre as demais seções.
+- Backups antigos continuam compatíveis: a preferência de favorito é opcional.
+
 ## 0.8.0 — 2026-10-29
 
 ### Adicionado

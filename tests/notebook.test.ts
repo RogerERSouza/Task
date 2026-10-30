@@ -87,6 +87,46 @@ test('saved data validation rejects malformed content and unsupported versions',
   assert.equal(isNotebook(null), false)
 })
 
+test('sections keep an optional favorite preference in backups', () => {
+  const base = {
+    schemaVersion: 1,
+    contents: [],
+    reminders: [],
+  }
+  assert.equal(
+    isNotebook({
+      ...base,
+      sections: [
+        {
+          id: 'section',
+          parentId: null,
+          title: 'Importante',
+          emoji: '⭐',
+          color: '#edcf94',
+          favorite: true,
+        },
+      ],
+    }),
+    true,
+  )
+  assert.equal(
+    isNotebook({
+      ...base,
+      sections: [
+        {
+          id: 'section',
+          parentId: null,
+          title: 'Inválida',
+          emoji: '',
+          color: '#edcf94',
+          favorite: 'yes',
+        },
+      ],
+    }),
+    false,
+  )
+})
+
 test('backup import accepts valid data and rejects invalid JSON or a wrong schema', () => {
   const backup = {
     schemaVersion: 1,

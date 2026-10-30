@@ -83,7 +83,9 @@ export function isNotebook(value: unknown): value is Notebook {
         (section.parentId === null || isText(section.parentId)) &&
         isText(section.title) &&
         isText(section.emoji) &&
-        isText(section.color),
+        isText(section.color) &&
+        (section.favorite === undefined ||
+          typeof section.favorite === 'boolean'),
     ) &&
     Array.isArray(data.reminders) &&
     data.reminders.every(

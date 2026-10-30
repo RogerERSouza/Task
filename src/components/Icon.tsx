@@ -18,6 +18,7 @@ type IconName =
   | 'sort'
   | 'trash'
   | 'settings'
+  | 'star'
 const paths: Record<IconName, string> = {
   plus: 'M12 5v14M5 12h14',
   search: 'm21 21-4.5-4.5M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
@@ -36,6 +37,7 @@ const paths: Record<IconName, string> = {
   sort: 'm4 8 3-3 3 3M7 5v14m13-3-3 3-3-3m3 3V5',
   settings: 'M4 7h16M4 17h16M8 4v6M16 14v6',
   trash: 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7',
+  star: 'm12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z',
 }
 
 export function Icon({

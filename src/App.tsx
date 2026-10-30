@@ -625,6 +625,10 @@ function App() {
     visibleSections.sort((first, second) =>
       first.title.localeCompare(second.title, 'pt-BR'),
     )
+  visibleSections.sort(
+    (first, second) =>
+      Number(Boolean(second.favorite)) - Number(Boolean(first.favorite)),
+  )
   const visibleContents = notebook.contents.filter(
     (content) =>
       content.sectionId === currentSection?.id &&
@@ -990,6 +994,19 @@ function App() {
                     }
                     onOpen={() => openSection(section.id)}
                     onEdit={() => setEditor({ kind: 'section', section })}
+                    onToggleFavorite={() =>
+                      setNotebook((current) => ({
+                        ...current,
+                        sections: current.sections.map((currentSection) =>
+                          currentSection.id === section.id
+                            ? {
+                                ...currentSection,
+                                favorite: !currentSection.favorite,
+                              }
+                            : currentSection,
+                        ),
+                      }))
+                    }
                   />
                 ))}
               </div>
@@ -1097,7 +1114,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.8.0</span>
+              <span className="muted">Tomohu · v0.9.0</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (
@@ -1152,7 +1169,12 @@ function App() {
                       )
                     : [
                         ...current.sections,
-                        { id: crypto.randomUUID(), parentId, ...values },
+                        {
+                          id: crypto.randomUUID(),
+                          parentId,
+                          favorite: false,
+                          ...values,
+                        },
                       ],
                 }))
                 setEditor(null)

@@ -6,11 +6,13 @@ export function SectionCard({
   count,
   onOpen,
   onEdit,
+  onToggleFavorite,
 }: {
   section: Section
   count: number
   onOpen: () => void
   onEdit: () => void
+  onToggleFavorite: () => void
 }) {
   return (
     <article className="section-card" style={{ borderTopColor: section.color }}>
@@ -23,6 +25,22 @@ export function SectionCard({
           {count} {count === 1 ? 'item' : 'itens'}
         </span>
         <Icon name="chevron" />
+      </button>
+      <button
+        className={
+          section.favorite
+            ? 'icon-button section-favorite is-favorite'
+            : 'icon-button section-favorite'
+        }
+        aria-label={
+          section.favorite
+            ? `Remover ${section.title} dos favoritos`
+            : `Fixar ${section.title} no topo`
+        }
+        aria-pressed={Boolean(section.favorite)}
+        onClick={onToggleFavorite}
+      >
+        <Icon name="star" />
       </button>
       <button
         className="icon-button section-menu"

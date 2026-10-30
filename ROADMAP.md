@@ -62,7 +62,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 ### Organização e uso diário
 
 - [x] Progresso visual em listas e coleções: quantidade, porcentagem e barra de avanço. — `0.8.0`
-- [ ] Favoritar/fixar seções importantes no topo.
+- [x] Favoritar/fixar seções importantes no topo. — `0.9.0`
 - [ ] Busca global por seções, conteúdos, notas, itens e lembretes.
 - [ ] Tags para organizar por assunto, como `escola`, `pessoal` e `trabalho`.
 - [ ] Filtros adicionais por tipo de conteúdo e estado de conclusão, quando esses dados fizerem sentido para a tela.

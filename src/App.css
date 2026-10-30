@@ -503,6 +503,25 @@ textarea::placeholder {
   top: 8px;
   right: 6px;
 }
+.section-favorite {
+  position: absolute;
+  top: 8px;
+  right: 40px;
+  color: #9dacc5;
+}
+.section-favorite svg {
+  width: 17px;
+  height: 17px;
+}
+.section-favorite:hover {
+  color: #f1d99d;
+}
+.section-favorite.is-favorite {
+  color: #edcf94;
+}
+.section-favorite.is-favorite svg {
+  fill: currentColor;
+}
 .content-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
