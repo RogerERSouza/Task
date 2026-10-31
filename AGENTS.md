@@ -41,6 +41,9 @@ Estas regras devem ser seguidas antes, durante e depois de qualquer alteração 
 ## Git e entregas
 
 - Usar commits pequenos, claros e compatíveis com o tipo de mudança: `feat:`, `fix:`, `refactor:`, `test:` ou `docs:`.
+- A `main` é sempre a versão estável e pronta para uso. Cada função, correção ou refatoração relevante começa em uma branch temporária: `feature/nome-curto`, `fix/nome-curto` ou `refactor/nome-curto`.
+- Fazer commits frequentes na branch de trabalho; antes de voltar para `main`, rodar todas as validações obrigatórias e revisar o diff. Depois da integração, apagar a branch temporária.
+- Não criar branches permanentes como `develop` enquanto o Tomohu for um projeto individual: o fluxo deve permanecer simples e fácil de acompanhar.
 - Arquivos `.patch` são temporários e não devem entrar no commit.
 - Arquivos permanentes de documentação, código, testes e configurações devem entrar no commit quando fizerem parte da alteração.
 - Antes de aplicar qualquer patch novo, atualizar a `main` e conferir `git status`.
