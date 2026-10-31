@@ -77,6 +77,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ### Personalização
 
+- [ ] Transformar **Ajustes** em uma página de **Configurações**, preparada para centralizar preferências do app e, no futuro, o gerenciamento da conta do usuário.
 - [x] Checkboxes estilizadas com a paleta do app. — `0.2.0`
 - [x] Cores livres para seções e subseções. — `0.2.0`
 - [x] Tema claro e escuro, salvo na preferência do navegador. — `0.14.0`
@@ -94,7 +95,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 ### Contas, privacidade e segurança
 
 - [ ] Login de usuários.
-- [ ] Onboarding após criar a conta: escolher idioma, tema claro/escuro padrão, formato de hora (12/24h) e outras preferências de qualidade de vida, todas alteráveis depois em Ajustes.
+- [ ] Onboarding após criar a conta: escolher idioma, tema claro/escuro padrão, formato de hora (12/24h) e outras preferências de qualidade de vida, todas alteráveis depois em Configurações.
 - [ ] Dados, alterações e backups ligados à conta correta.
 - [ ] Sessões privadas protegidas por senha.
 - [ ] Criptografia real para conteúdo privado e proteção adequada de dados sensíveis.
