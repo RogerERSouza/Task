@@ -92,6 +92,7 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 ### Contas, privacidade e segurança
 
 - [ ] Login de usuários.
+- [ ] Onboarding após criar a conta: escolher idioma, tema claro/escuro padrão, formato de hora (12/24h) e outras preferências de qualidade de vida, todas alteráveis depois em Ajustes.
 - [ ] Dados, alterações e backups ligados à conta correta.
 - [ ] Sessões privadas protegidas por senha.
 - [ ] Criptografia real para conteúdo privado e proteção adequada de dados sensíveis.
