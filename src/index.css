@@ -10,6 +10,14 @@
   font-size: 15px;
   line-height: 1.5;
 }
+:root[data-theme='light'] {
+  color: #293750;
+  background: #f5f2ea;
+  color-scheme: light;
+}
+:root[data-theme='light'] body {
+  background: #f5f2ea;
+}
 * {
   box-sizing: border-box;
 }

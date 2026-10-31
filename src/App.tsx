@@ -41,6 +41,19 @@ type Editor =
   | { kind: 'import-backup'; backup: Notebook; fileName: string }
   | null
 
+type Theme = 'dark' | 'light'
+const THEME_STORAGE_KEY = 'tomohu.theme'
+
+function getSavedTheme(): Theme {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY) === 'light'
+      ? 'light'
+      : 'dark'
+  } catch {
+    return 'dark'
+  }
+}
+
 function subscribeToHash(onChange: () => void) {
   window.addEventListener('hashchange', onChange)
   return () => window.removeEventListener('hashchange', onChange)
@@ -694,6 +707,7 @@ function App() {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const [editor, setEditor] = useState<Editor>(null)
+  const [theme, setTheme] = useState<Theme>(getSavedTheme)
   const [importError, setImportError] = useState('')
   const importInputRef = useRef<HTMLInputElement>(null)
   const [isCompactContentLayout, setIsCompactContentLayout] = useState(
@@ -704,6 +718,14 @@ function App() {
     const timer = window.setInterval(() => setNow(new Date()), 1000)
     return () => window.clearInterval(timer)
   }, [])
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme)
+    } catch {
+      // Theme preference is optional when browser storage is unavailable.
+    }
+  }, [theme])
   useEffect(() => {
     const media = window.matchMedia('(max-width: 760px)')
     const updateContentLayout = () => setIsCompactContentLayout(media.matches)
@@ -1319,6 +1341,39 @@ function App() {
         >
           {editor.kind === 'settings' && (
             <div className="settings-panel">
+              <fieldset className="theme-field">
+                <legend>Tema</legend>
+                <div
+                  className="theme-options"
+                  role="radiogroup"
+                  aria-label="Tema do app"
+                >
+                  <button
+                    type="button"
+                    className={
+                      theme === 'dark'
+                        ? 'theme-option selected'
+                        : 'theme-option'
+                    }
+                    aria-pressed={theme === 'dark'}
+                    onClick={() => setTheme('dark')}
+                  >
+                    Escuro
+                  </button>
+                  <button
+                    type="button"
+                    className={
+                      theme === 'light'
+                        ? 'theme-option selected'
+                        : 'theme-option'
+                    }
+                    aria-pressed={theme === 'light'}
+                    onClick={() => setTheme('light')}
+                  >
+                    Claro
+                  </button>
+                </div>
+              </fieldset>
               <button className="secondary-button" onClick={exportNotebook}>
                 <Icon name="download" />
                 Exportar cópia dos dados
@@ -1335,7 +1390,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.13.0</span>
+              <span className="muted">Tomohu · v0.14.0</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (

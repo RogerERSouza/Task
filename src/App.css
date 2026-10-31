@@ -49,6 +49,28 @@
   flex-direction: column;
   gap: 18px;
 }
+.theme-field {
+  display: grid;
+  gap: 9px;
+}
+.theme-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.theme-option {
+  min-height: 42px;
+  border: 1px solid #8198bd38;
+  border-radius: 10px;
+  background: #18243d;
+  color: #c3cde0;
+  font-size: 12px;
+}
+.theme-option.selected {
+  border-color: #edcf94;
+  background: #edcf9412;
+  color: #f1d99d;
+}
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -1895,6 +1917,73 @@ legend {
   .add-item button {
     flex: 1;
   }
+}
+
+:root[data-theme='light'] .bottom-nav,
+:root[data-theme='light'] .content-card,
+:root[data-theme='light'] .section-card,
+:root[data-theme='light'] .search-result,
+:root[data-theme='light'] .editor-panel,
+:root[data-theme='light'] .modal,
+:root[data-theme='light'] .sort-menu-panel,
+:root[data-theme='light'] .time-picker-panel,
+:root[data-theme='light'] .calendar-picker,
+:root[data-theme='light'] .reminder-schedule-option,
+:root[data-theme='light'] .secondary-button,
+:root[data-theme='light'] .search-field,
+:root[data-theme='light'] .theme-option {
+  background: #fffdf8;
+  border-color: #b9b29f;
+  color: #293750;
+}
+:root[data-theme='light'] .section-card:hover,
+:root[data-theme='light'] .content-card:hover,
+:root[data-theme='light'] .search-result:hover,
+:root[data-theme='light'] .secondary-button:hover {
+  background: #f3efe5;
+}
+:root[data-theme='light'] .muted,
+:root[data-theme='light'] .eyebrow,
+:root[data-theme='light'] .content-detail-text,
+:root[data-theme='light'] .text-preview,
+:root[data-theme='light'] .search-result-copy span {
+  color: #66738a;
+}
+:root[data-theme='light'] .bottom-nav-button,
+:root[data-theme='light'] .sort-menu-label,
+:root[data-theme='light'] .sort-option,
+:root[data-theme='light'] .content-items-list,
+:root[data-theme='light'] .content-label,
+:root[data-theme='light'] .field,
+:root[data-theme='light'] .time-picker,
+:root[data-theme='light'] .calendar-picker,
+:root[data-theme='light'] .import-backup-panel,
+:root[data-theme='light'] .expired-reminder-panel {
+  color: #34425b;
+}
+:root[data-theme='light'] .bottom-nav-button:hover,
+:root[data-theme='light'] .content-items-list li:hover,
+:root[data-theme='light'] .sort-option:hover {
+  background: #eee9dc;
+}
+:root[data-theme='light'] input,
+:root[data-theme='light'] textarea,
+:root[data-theme='light'] .item-text,
+:root[data-theme='light'] .add-item input,
+:root[data-theme='light'] .tag-input-row input {
+  background: #fffdf8;
+  border-color: #c8c0ac;
+  color: #293750;
+}
+:root[data-theme='light'] .list-progress-track {
+  background: #e3ddd0;
+}
+:root[data-theme='light'] .theme-option.selected,
+:root[data-theme='light'] .reminder-schedule-option.selected,
+:root[data-theme='light'] .sort-option.active {
+  background: #fff3cb;
+  border-color: #cfae57;
+  color: #66501d;
 }
 @media (max-width: 760px) {
   .main-content {
