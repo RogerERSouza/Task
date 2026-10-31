@@ -44,6 +44,8 @@ Uma entrega pode ter vários commits. A versão só sobe quando a função estiv
 
 ## Mini patches planejados
 
+- [x] Melhorar a leitura de números e textos do calendário no tema claro. — `0.14.2`
+- [x] Corrigir contraste, seletor de cores e campo de tags no tema claro. — `0.14.1`
 - [x] Organizar listas expansíveis em colunas independentes e permitir excluir conteúdos com confirmação. — `0.11.4`
 - [x] Corrigir o espaço visual ao expandir listas e permitir excluir uma seção com confirmação, incluindo suas subseções e conteúdos. — `0.11.3`
 - [x] Trocar os controles atuais de ordenação por um único botão dropdown, com filtro pelas cores já usadas e ordem por recentes, antigas ou A–Z. — `0.6.2`

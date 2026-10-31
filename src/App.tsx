@@ -126,7 +126,7 @@ function SectionForm({
       </label>
       <label className="field">
         <span>
-          Emoji <small>opcional</small>
+          Emoji <small>(opcional)</small>
         </span>
         <input
           maxLength={12}
@@ -176,7 +176,7 @@ function SectionForm({
       </fieldset>
       <fieldset className="tag-field">
         <legend>
-          Tags <small>opcional</small>
+          Tags <small>(opcional)</small>
         </legend>
         <div className="tag-input-row">
           <input
@@ -1390,7 +1390,7 @@ function App() {
                 </p>
               )}
               <p className="muted">Os dados ficam neste navegador.</p>
-              <span className="muted">Tomohu · v0.14.0</span>
+              <span className="muted">Tomohu · v0.14.2</span>
             </div>
           )}
           {editor.kind === 'import-backup' && (

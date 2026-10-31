@@ -756,13 +756,20 @@ textarea::placeholder {
 .tag-input-row {
   display: flex;
   gap: 8px;
+  padding: 4px;
+  border: 1px solid #8198bd38;
+  border-radius: 12px;
+  background: #18243d;
 }
 .tag-input-row input {
   min-width: 0;
   flex: 1;
+  border: none;
+  background: transparent;
 }
 .tag-input-row .secondary-button {
   min-height: 40px;
+  border-radius: 8px;
 }
 .tag-chip:hover,
 .sort-tag:hover,
@@ -1961,18 +1968,75 @@ legend {
 :root[data-theme='light'] .expired-reminder-panel {
   color: #34425b;
 }
+:root[data-theme='light'] .field small,
+:root[data-theme='light'] legend,
+:root[data-theme='light'] .color-options {
+  color: #66738a;
+}
 :root[data-theme='light'] .bottom-nav-button:hover,
 :root[data-theme='light'] .content-items-list li:hover,
 :root[data-theme='light'] .sort-option:hover {
   background: #eee9dc;
 }
+:root[data-theme='light'] .text-button {
+  color: #7b5a18;
+}
+:root[data-theme='light'] .breadcrumb {
+  color: #66738a;
+}
+:root[data-theme='light'] .breadcrumb [aria-current] {
+  color: #74571b;
+}
+:root[data-theme='light'] .color-option input {
+  background: transparent !important;
+}
+:root[data-theme='light'] .color-option:has(input:checked) {
+  box-shadow:
+    0 0 0 3px #fffdf8,
+    0 0 0 5px currentColor;
+}
 :root[data-theme='light'] input,
 :root[data-theme='light'] textarea,
 :root[data-theme='light'] .item-text,
-:root[data-theme='light'] .add-item input,
-:root[data-theme='light'] .tag-input-row input {
+:root[data-theme='light'] .add-item input {
   background: #fffdf8;
   border-color: #c8c0ac;
+  color: #293750;
+}
+:root[data-theme='light'] .tag-input-row {
+  border-color: #c8c0ac;
+  background: #fffdf8;
+}
+:root[data-theme='light'] .tag-input-row input {
+  background: transparent;
+  border: none;
+  color: #293750;
+}
+:root[data-theme='light'] .calendar-today,
+:root[data-theme='light'] .content-expand-label,
+:root[data-theme='light'] .reminder-countdown,
+:root[data-theme='light'] .content-item-number,
+:root[data-theme='light'] .step-number {
+  color: #7b5a18;
+}
+:root[data-theme='light'] .calendar-label,
+:root[data-theme='light'] .calendar-header,
+:root[data-theme='light'] .calendar-day {
+  color: #34425b;
+}
+:root[data-theme='light'] .calendar-weekday {
+  color: #58677f;
+}
+:root[data-theme='light'] .calendar-nav {
+  border-color: #c8c0ac;
+  background: #f3efe5;
+  color: #74571b;
+}
+:root[data-theme='light'] .calendar-day:hover {
+  background: #eee9dc;
+}
+:root[data-theme='light'] .calendar-day.today {
+  border-color: #8a9ab4;
   color: #293750;
 }
 :root[data-theme='light'] .list-progress-track {
